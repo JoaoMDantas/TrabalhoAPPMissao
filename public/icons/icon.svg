@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Projeto Missionário">
+  <rect width="512" height="512" rx="112" fill="#0f766e"/>
+  <g fill="none" stroke="#fff" stroke-width="22" stroke-linecap="round">
+    <circle cx="256" cy="256" r="154"/>
+    <ellipse cx="256" cy="256" rx="69" ry="154"/>
+    <line x1="102" y1="256" x2="410" y2="256"/>
+    <line x1="123" y1="179" x2="389" y2="179"/>
+    <line x1="123" y1="333" x2="389" y2="333"/>
+  </g>
+</svg>

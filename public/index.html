@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="description" content="Aplicativo que conecta igrejas e missionários: agenda, mural de avisos e contatos.">
+    <meta name="theme-color" content="#0f766e">
+    <title>Projeto Missionário</title>
+
+    <link rel="manifest" href="/manifest.webmanifest">
+    <link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/icons/icon-192.png">
+
+    <link rel="stylesheet" href="/vendor/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/vendor/bootstrap-icons/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="/css/app.css">
+  </head>
+  <body>
+    <div id="app">
+      <div class="carregando-inicial" role="status">
+        <div class="spinner-border text-primary" aria-hidden="true"></div>
+        <span class="visually-hidden">Carregando...</span>
+      </div>
+    </div>
+    <div id="avisos" class="toast-container position-fixed start-50 translate-middle-x p-3" aria-live="polite"></div>
+
+    <noscript>Este aplicativo precisa do JavaScript ativado no navegador.</noscript>
+
+    <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script type="module" src="/js/main.js"></script>
+  </body>
+</html>
