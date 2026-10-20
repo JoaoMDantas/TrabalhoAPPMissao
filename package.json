@@ -1,18 +1,17 @@
 {
   "name": "projeto-missionario",
   "version": "0.2.0",
-  "description": "MVP de aplicativo (PWA) para conectar igrejas e missionários - Atividade Extensionista UNINTER",
+  "description": "Aplicativo (PWA) para conectar igrejas e missionários",
   "type": "module",
   "main": "src/server.js",
   "engines": {
     "node": ">=20.6"
   },
   "scripts": {
-    "start": "node database/migrate.js && node database/seed.js --se-habilitado && node src/server.js",
+    "start": "node database/migrate.js && node database/criar-admin.js && node src/server.js",
     "dev": "node --watch src/server.js",
     "db:migrate": "node database/migrate.js",
-    "db:seed": "node database/seed.js",
-    "db:reset": "node database/migrate.js --reset && node database/seed.js",
+    "db:reset": "node database/migrate.js --reset && node database/criar-admin.js",
     "pretest": "node database/migrate.js --test --reset",
     "test": "node --test"
   },
