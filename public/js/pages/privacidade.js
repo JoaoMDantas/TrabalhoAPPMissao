@@ -8,10 +8,7 @@ export default function paginaPrivacidade({ el }) {
       <div class="tela-acesso">
         <article class="cartao-acesso texto-privacidade">
           <h1 class="h4 fw-bold mb-3"><i class="bi bi-shield-check text-primary" aria-hidden="true"></i> Aviso de privacidade</h1>
-          <p>
-            O Projeto Missionário é um aplicativo acadêmico (Atividade Extensionista – UNINTER) criado para conectar
-            igrejas e missionários de São Luís – MA.
-          </p>
+          <p>O Projeto Missionário é um aplicativo criado para conectar igrejas e missionários de São Luís – MA.</p>
           <h2>Quais dados coletamos</h2>
           <p>Nome, e-mail, telefone (opcional), igreja, bairro de atuação e o que você publica na agenda e no mural.</p>
           <h2>Para que usamos</h2>

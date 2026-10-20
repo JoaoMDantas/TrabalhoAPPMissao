@@ -20,8 +20,11 @@ describe('Trilha de capacitação', () => {
     await api().get('/api/materiais').expect(401);
     const resposta = await api().get('/api/materiais').set(pessoa.auth).expect(200);
 
-    assert.ok(resposta.body.length >= 12);
+    assert.ok(resposta.body.length >= 14);
     assert.equal(resposta.body[0].titulo, 'Guia rápido do Projeto Missionário');
+    // A trilha é focada em missões e evangelismo; as cartilhas de segurança digital saíram (migration 007).
+    assert.equal(resposta.body.filter((m) => m.url.includes('cert.br')).length, 0);
+    assert.ok(resposta.body.some((m) => m.etapa === '3. Campanha de Missões Nacionais 2026'));
     const etapas = resposta.body.map((m) => m.etapa);
     assert.deepEqual(etapas, [...etapas].sort());
     // Materiais da curadoria inicial não têm autor: missionário não pode excluir.

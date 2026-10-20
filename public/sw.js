@@ -1,5 +1,5 @@
 // Ao mudar arquivos essenciais, aumente a versão para que os aparelhos descartem o cache antigo.
-const CACHE = 'projeto-missionario-v2';
+const CACHE = 'projeto-missionario-v3';
 
 const ARQUIVOS_ESSENCIAIS = [
   '/',

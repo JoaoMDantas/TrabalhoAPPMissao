@@ -73,8 +73,8 @@ export default async function paginaCapacitacao({ el }) {
         <section class="cartao cartao-trilha">
           <h1 class="h5 fw-bold mb-1"><i class="bi bi-mortarboard" aria-hidden="true"></i> Trilha de capacitação</h1>
           <p class="small text-body-secondary mb-3">
-            Vídeos, cartilhas e cursos selecionados para fortalecer o trabalho de missionários e igrejas.
-            Abra cada material e marque quando concluir.
+            Vídeos, revistas e roteiros sobre missões e evangelismo para fortalecer o trabalho de missionários e
+            igrejas. Abra cada material e marque quando concluir.
           </p>
           <div class="d-flex justify-content-between small fw-semibold mb-1">
             <span>Seu progresso</span><span>${feitos} de ${materiais.length} concluídos</span>
