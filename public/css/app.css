@@ -793,6 +793,25 @@ body {
 .tipo-material-video { background: #ffedd5; color: #c2410c; }
 .tipo-material-link { background: #dbeafe; color: #1e40af; }
 
+.cartao-senha {
+  border-color: #99e3d8;
+  background: #f0fdfa;
+}
+
+.senha-temporaria {
+  margin: 0.5rem 0;
+  padding: 0.5rem;
+  border: 1px dashed var(--pm-primaria);
+  border-radius: 10px;
+  background: #fff;
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-align: center;
+  user-select: all;
+}
+
 .texto-privacidade h2 {
   margin: 1rem 0 0.25rem;
   font-size: 1rem;

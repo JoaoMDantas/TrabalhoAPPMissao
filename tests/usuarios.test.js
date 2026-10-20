@@ -46,6 +46,25 @@ describe('Usuários e perfis', () => {
     await api().post('/api/auth/login').send({ email: pessoa.usuario.email, senha: 'NovaSenha456' }).expect(200);
   });
 
+  test('admin redefine a senha esquecida com uma senha temporária', async () => {
+    const admin = await criarUsuario({ papel: 'admin' });
+    const lider = await criarUsuario({ papel: 'lider' });
+    const pessoa = await criarUsuario();
+    const rota = `/api/usuarios/${pessoa.usuario.id}/redefinir-senha`;
+
+    await api().post(rota).set(pessoa.auth).expect(403);
+    await api().post(rota).set(lider.auth).expect(403);
+    const resposta = await api().post(rota).set(admin.auth).expect(200);
+    assert.match(resposta.body.senha_temporaria, /^[A-HJ-NP-Za-km-np-z2-9]{10}$/);
+
+    await api().post('/api/auth/login').send({ email: pessoa.usuario.email, senha: pessoa.senha }).expect(401);
+    await api()
+      .post('/api/auth/login')
+      .send({ email: pessoa.usuario.email, senha: resposta.body.senha_temporaria })
+      .expect(200);
+    await api().post('/api/usuarios/999999/redefinir-senha').set(admin.auth).expect(404);
+  });
+
   test('lista pessoas por papel e busca', async () => {
     const nomeUnico = `Missionária Busca ${Date.now()}`;
     const missionaria = await criarUsuario({ nome: nomeUnico });
