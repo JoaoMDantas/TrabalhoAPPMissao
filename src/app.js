@@ -3,6 +3,7 @@ import { fileURLToPath } from 'node:url';
 import express from 'express';
 import helmet from 'helmet';
 import { consultar } from './config/database.js';
+import { config } from './config/env.js';
 import { rotaNaoEncontrada, tratarErros } from './core/middlewares/tratarErros.js';
 import { registrarModulos } from './modules/index.js';
 
@@ -28,6 +29,10 @@ function criarApi() {
 
 export function criarApp() {
   const app = express();
+
+  // Na nuvem o app fica atrás de um proxy; sem isso, todos os acessos pareceriam vir do mesmo IP
+  // e o limite de tentativas de login bloquearia todo mundo ao mesmo tempo.
+  if (config.ehProducao) app.set('trust proxy', 1);
 
   app.use(
     helmet({

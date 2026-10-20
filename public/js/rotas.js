@@ -8,6 +8,8 @@ const pagina = (nome) => () => import(`./pages/${nome}.js`);
 export const rotas = [
   { caminho: '/login', titulo: 'Entrar', pagina: pagina('login'), publica: true },
   { caminho: '/cadastro', titulo: 'Criar conta', pagina: pagina('cadastro'), publica: true },
+  // "livre": acessível com ou sem login.
+  { caminho: '/privacidade', titulo: 'Aviso de privacidade', pagina: pagina('privacidade'), publica: true, livre: true },
 
   { caminho: '/inicio', titulo: 'Início', pagina: pagina('inicio'), nav: { icone: 'house-door', rotulo: 'Início' } },
 
@@ -30,6 +32,9 @@ export const rotas = [
     nav: { icone: 'people', rotulo: 'Missionários' },
   },
   { caminho: '/missionarios/:id', titulo: 'Perfil', pagina: pagina('missionario-detalhe') },
+
+  { caminho: '/capacitacao', titulo: 'Capacitação', pagina: pagina('capacitacao') },
+  { caminho: '/capacitacao/novo', titulo: 'Novo material', pagina: pagina('material-form') },
 
   { caminho: '/perfil', titulo: 'Meu perfil', pagina: pagina('perfil') },
 ];

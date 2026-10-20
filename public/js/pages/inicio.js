@@ -44,7 +44,7 @@ export default async function paginaInicio({ el }) {
       <nav class="atalhos" aria-label="Atalhos">
         <a class="atalho" href="#/agenda/novo"><i class="bi bi-calendar-plus" aria-hidden="true"></i>Novo evento</a>
         <a class="atalho" href="#/mural"><i class="bi bi-pencil-square" aria-hidden="true"></i>Escrever no mural</a>
-        <a class="atalho" href="#/igrejas"><i class="bi bi-building" aria-hidden="true"></i>Igrejas</a>
+        <a class="atalho" href="#/capacitacao"><i class="bi bi-mortarboard" aria-hidden="true"></i>Capacitação</a>
         <a class="atalho" href="#/missionarios"><i class="bi bi-people" aria-hidden="true"></i>Missionários</a>
       </nav>
 

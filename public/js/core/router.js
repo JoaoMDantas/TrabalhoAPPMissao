@@ -46,7 +46,7 @@ async function resolver() {
 
   const { rota, params } = encontrarRota(caminho);
   if (!rota.publica && !sessao.logado) return navegar('/login', { substituir: true });
-  if (rota.publica && sessao.logado) return navegar('/inicio', { substituir: true });
+  if (rota.publica && !rota.livre && sessao.logado) return navegar('/inicio', { substituir: true });
 
   document.title = `${rota.titulo} · Projeto Missionário`;
   const el = prepararTela(rota, caminho);

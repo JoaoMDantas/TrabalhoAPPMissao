@@ -173,7 +173,10 @@ export function mostrarErroFormulario(form, erro) {
     retorno.className = 'invalid-feedback';
     retorno.dataset.gerado = '';
     retorno.textContent = mensagem;
-    elemento.insertAdjacentElement('afterend', retorno);
+    // Em caixas de seleção, a mensagem vai depois do rótulo, como o Bootstrap espera.
+    const grupoCheckbox = elemento.type === 'checkbox' ? elemento.closest('.form-check') : null;
+    if (grupoCheckbox) grupoCheckbox.append(retorno);
+    else elemento.insertAdjacentElement('afterend', retorno);
     primeiroCampo ??= elemento;
   }
 

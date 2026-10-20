@@ -105,7 +105,8 @@ export default async function paginaPerfil({ el, navegar }) {
       </button>
 
       <p class="text-center small text-body-secondary mt-4 mb-0">
-        Projeto Missionário · versão 0.1.0 (MVP)<br>Atividade Extensionista · UNINTER
+        Projeto Missionário · versão 0.2.0<br>Atividade Extensionista · UNINTER<br>
+        <a href="#/privacidade">Aviso de privacidade</a>
       </p>`,
   );
 

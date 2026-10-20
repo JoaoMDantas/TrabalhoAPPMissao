@@ -12,4 +12,10 @@ export const TIPOS_EVENTO = Object.freeze({
   outro: { rotulo: 'Outro', icone: 'calendar-event' },
 });
 
+export const TIPOS_MATERIAL = Object.freeze({
+  pdf: { rotulo: 'PDF', icone: 'file-earmark-pdf' },
+  video: { rotulo: 'Vídeo', icone: 'play-btn' },
+  link: { rotulo: 'Site', icone: 'box-arrow-up-right' },
+});
+
 export const BAIRROS_SUGERIDOS = Object.freeze(['Cohatrac', 'Planalto Anil III']);

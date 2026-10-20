@@ -20,6 +20,7 @@ export async function criarUsuario({ papel = 'missionario', ...extras } = {}) {
     email: `teste${sufixoUnico()}@exemplo.com`,
     senha: 'SenhaForte123',
     papel: papel === 'admin' ? 'missionario' : papel,
+    aceite: true,
     ...extras,
   };
   const resposta = await api().post('/api/auth/registrar').send(dados).expect(201);

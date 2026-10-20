@@ -76,9 +76,15 @@ export default function paginaCadastro({ el, navegar }) {
               <label class="form-label" for="confirmar_senha">Confirmar senha</label>
               <input class="form-control" id="confirmar_senha" name="confirmar_senha" type="password" autocomplete="new-password" required>
             </div>
-            <div class="form-check mb-4">
+            <div class="form-check mb-3">
               <input class="form-check-input" type="checkbox" id="mostrar-senha">
               <label class="form-check-label small" for="mostrar-senha">Mostrar senhas</label>
+            </div>
+            <div class="form-check mb-4">
+              <input class="form-check-input" type="checkbox" id="aceite" name="aceite">
+              <label class="form-check-label small" for="aceite">
+                Li e aceito o <a href="#/privacidade" target="_blank" rel="noopener">aviso de privacidade</a>.
+              </label>
             </div>
 
             <button class="btn btn-primary btn-lg w-100" type="submit">Criar conta</button>

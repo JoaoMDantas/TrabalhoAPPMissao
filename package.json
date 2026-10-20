@@ -1,6 +1,6 @@
 {
   "name": "projeto-missionario",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "MVP de aplicativo (PWA) para conectar igrejas e missionários - Atividade Extensionista UNINTER",
   "type": "module",
   "main": "src/server.js",
@@ -8,7 +8,7 @@
     "node": ">=20.6"
   },
   "scripts": {
-    "start": "node src/server.js",
+    "start": "node database/migrate.js && node database/seed.js --se-habilitado && node src/server.js",
     "dev": "node --watch src/server.js",
     "db:migrate": "node database/migrate.js",
     "db:seed": "node database/seed.js",

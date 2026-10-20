@@ -17,19 +17,34 @@ function segredoJwt() {
   return segredo;
 }
 
+/** Em hospedagens como o Railway, o banco vem numa única variável: mysql://usuario:senha@host:porta/banco */
+function lerUrlDoBanco() {
+  if (!process.env.DATABASE_URL || ehTeste) return {};
+  const url = new URL(process.env.DATABASE_URL);
+  return {
+    host: url.hostname,
+    port: Number(url.port) || 3306,
+    user: decodeURIComponent(url.username),
+    password: decodeURIComponent(url.password),
+    database: url.pathname.slice(1),
+  };
+}
+
+const bancoDaUrl = lerUrlDoBanco();
+
 export const config = Object.freeze({
   ambiente,
   ehTeste,
   ehProducao,
   porta: Number(process.env.PORT) || 3000,
   db: Object.freeze({
-    host: process.env.DB_HOST || 'localhost',
-    port: Number(process.env.DB_PORT) || 3306,
-    user: process.env.DB_USER || 'root',
-    password: process.env.DB_PASSWORD ?? '',
+    host: bancoDaUrl.host || process.env.DB_HOST || 'localhost',
+    port: bancoDaUrl.port || Number(process.env.DB_PORT) || 3306,
+    user: bancoDaUrl.user || process.env.DB_USER || 'root',
+    password: bancoDaUrl.password ?? process.env.DB_PASSWORD ?? '',
     database: ehTeste
       ? process.env.DB_NAME_TEST || 'projeto_missionario_test'
-      : process.env.DB_NAME || 'projeto_missionario',
+      : bancoDaUrl.database || process.env.DB_NAME || 'projeto_missionario',
     timezone: process.env.DB_TIMEZONE || '-03:00',
   }),
   jwt: Object.freeze({

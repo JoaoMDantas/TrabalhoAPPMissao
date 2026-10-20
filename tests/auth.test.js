@@ -20,7 +20,7 @@ describe('Autenticação', () => {
     const { usuario } = await criarUsuario();
     const resposta = await api()
       .post('/api/auth/registrar')
-      .send({ nome: 'Outra Pessoa', email: usuario.email.toUpperCase(), senha: 'SenhaForte123' })
+      .send({ nome: 'Outra Pessoa', email: usuario.email.toUpperCase(), senha: 'SenhaForte123', aceite: true })
       .expect(409);
 
     assert.equal(resposta.body.erro.mensagem, 'Este e-mail já está cadastrado.');
@@ -33,20 +33,34 @@ describe('Autenticação', () => {
       .expect(400);
 
     const campos = resposta.body.erro.detalhes.map((d) => d.campo);
-    assert.deepEqual(campos.sort(), ['email', 'nome', 'senha']);
+    assert.deepEqual(campos.sort(), ['aceite', 'email', 'nome', 'senha']);
+  });
+
+  test('exige o aceite do aviso de privacidade', async () => {
+    const dados = { nome: 'Pessoa Teste', email: `aceite${Date.now()}@exemplo.com`, senha: 'SenhaForte123' };
+
+    const semAceite = await api().post('/api/auth/registrar').send(dados).expect(400);
+    assert.equal(semAceite.body.erro.mensagem, 'Para criar a conta, é preciso aceitar o aviso de privacidade.');
+
+    // O formulário envia a checkbox marcada como "on".
+    await api()
+      .post('/api/auth/registrar')
+      .send({ ...dados, aceite: 'on' })
+      .expect(201);
   });
 
   test('não permite se cadastrar como administrador', async () => {
-    await api()
+    const resposta = await api()
       .post('/api/auth/registrar')
-      .send({ nome: 'Pessoa Teste', email: `admin${Date.now()}@exemplo.com`, senha: 'SenhaForte123', papel: 'admin' })
+      .send({ nome: 'Pessoa Teste', email: `admin${Date.now()}@exemplo.com`, senha: 'SenhaForte123', papel: 'admin', aceite: true })
       .expect(400);
+    assert.equal(resposta.body.erro.detalhes[0].campo, 'papel');
   });
 
   test('recusa igreja inexistente no cadastro', async () => {
     const resposta = await api()
       .post('/api/auth/registrar')
-      .send({ nome: 'Pessoa Teste', email: `igreja${Date.now()}@exemplo.com`, senha: 'SenhaForte123', igreja_id: 999999 })
+      .send({ nome: 'Pessoa Teste', email: `igreja${Date.now()}@exemplo.com`, senha: 'SenhaForte123', igreja_id: 999999, aceite: true })
       .expect(400);
 
     assert.equal(resposta.body.erro.mensagem, 'A igreja selecionada não existe.');

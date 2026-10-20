@@ -744,6 +744,66 @@ body {
   gap: 0.5rem;
 }
 
+/* --- Capacitação --- */
+.cartao-trilha .bi-mortarboard {
+  color: var(--pm-primaria);
+}
+
+.progress {
+  --bs-progress-bar-bg: var(--pm-primaria);
+  height: 0.6rem;
+}
+
+.item-material {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.875rem;
+  padding: 0.875rem;
+  border: 1px solid var(--pm-borda);
+  border-radius: var(--pm-raio);
+  background: var(--pm-superficie);
+}
+
+.item-material.concluido {
+  border-color: #a7dfc0;
+  background: #f3fbf6;
+}
+
+.item-material-titulo {
+  color: inherit;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.item-material-titulo:hover {
+  color: var(--pm-primaria);
+}
+
+.item-material-titulo .bi {
+  color: var(--pm-texto-suave);
+}
+
+.item-material-descricao {
+  margin: 0.2rem 0 0;
+  color: var(--pm-texto-suave);
+  font-size: 0.85rem;
+}
+
+.tipo-material-pdf { background: #fee2e2; color: #b91c1c; }
+.tipo-material-video { background: #ffedd5; color: #c2410c; }
+.tipo-material-link { background: #dbeafe; color: #1e40af; }
+
+.texto-privacidade h2 {
+  margin: 1rem 0 0.25rem;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.texto-privacidade p {
+  margin-bottom: 0.5rem;
+  font-size: 0.92rem;
+}
+
 /* --- Login e cadastro --- */
 .tela-acesso {
   display: flex;

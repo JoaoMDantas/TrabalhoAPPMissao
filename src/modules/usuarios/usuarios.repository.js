@@ -45,10 +45,11 @@ export async function listar({ papel, igreja_id: igrejaId, busca }) {
   return linhas.map(mapear);
 }
 
+/** Usado no cadastro, que só acontece após o aceite do aviso de privacidade. */
 export async function criar(dados) {
   const resultado = await consultar(
-    `INSERT INTO usuarios (nome, email, senha_hash, telefone, papel, igreja_id, bairro_atuacao)
-     VALUES (?, ?, ?, ?, ?, ?, ?)`,
+    `INSERT INTO usuarios (nome, email, senha_hash, telefone, papel, igreja_id, bairro_atuacao, aceitou_termos_em)
+     VALUES (?, ?, ?, ?, ?, ?, ?, NOW())`,
     [dados.nome, dados.email, dados.senha_hash, dados.telefone, dados.papel, dados.igreja_id, dados.bairro_atuacao],
   );
   return resultado.insertId;

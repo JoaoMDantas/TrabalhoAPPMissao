@@ -13,6 +13,11 @@ export const esquemaRegistro = z.object({
     .default(PAPEIS.MISSIONARIO),
   igreja_id: opcional(id),
   bairro_atuacao: textoOpcional(80),
+  // Checkbox do formulário: chega como "on" quando marcada.
+  aceite: z.preprocess(
+    (valor) => valor === true || valor === 'on' || valor === 'true',
+    z.literal(true, { error: 'Para criar a conta, é preciso aceitar o aviso de privacidade.' }),
+  ),
 });
 
 export const esquemaLogin = z.object({

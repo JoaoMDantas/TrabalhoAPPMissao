@@ -1,6 +1,7 @@
 import authRotas from './auth/auth.routes.js';
 import eventosRotas from './eventos/eventos.routes.js';
 import igrejasRotas from './igrejas/igrejas.routes.js';
+import materiaisRotas from './materiais/materiais.routes.js';
 import muralRotas from './mural/mural.routes.js';
 import usuariosRotas from './usuarios/usuarios.routes.js';
 
@@ -11,6 +12,7 @@ const modulos = [
   { prefixo: '/igrejas', rotas: igrejasRotas },
   { prefixo: '/eventos', rotas: eventosRotas },
   { prefixo: '/mural', rotas: muralRotas },
+  { prefixo: '/materiais', rotas: materiaisRotas },
 ];
 
 export function registrarModulos(roteador) {
