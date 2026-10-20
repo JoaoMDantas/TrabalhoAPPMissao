@@ -5,6 +5,8 @@ capacitação de quem atua em missões.
 
 Funciona direto no navegador e pode ser instalado na tela inicial do celular, como um aplicativo.
 
+**Acesse:** https://trabalhoappmissao-production.up.railway.app
+
 ## Funcionalidades
 
 - **Agenda de atividades:** cultos, visitas, ações sociais e reuniões organizados por mês, com compartilhamento pelo WhatsApp.
