@@ -1,6 +1,7 @@
 import './setup-env.js';
 import assert from 'node:assert/strict';
 import { after, describe, test } from 'node:test';
+import { consultar } from '../src/config/database.js';
 import { api, criarIgreja, criarUsuario, encerrarBanco } from './helpers.js';
 
 after(encerrarBanco);
@@ -54,6 +55,33 @@ describe('Mural', () => {
     assert.deepEqual(
       pagina2.body.map((m) => m.conteudo),
       ['primeira'],
+    );
+  });
+
+  test('ordena pela data de publicação, mesmo quando o cadastro no banco foi feito fora de ordem', async () => {
+    const lider = await criarUsuario({ papel: 'lider' });
+    const igreja = await criarIgreja(lider);
+    for (const conteudo of ['de hoje', 'de agora']) {
+      await publicar(lider, { conteudo, igreja_id: igreja.id }).expect(201);
+    }
+    // Registrada por último, mas com data de dez dias atrás (ex.: inserida direto no banco).
+    const { body: antiga } = await publicar(lider, { conteudo: 'de dez dias atrás', igreja_id: igreja.id }).expect(201);
+    await consultar('UPDATE mensagens SET criado_em = NOW() - INTERVAL 10 DAY WHERE id = ?', [antiga.id]);
+
+    const pagina1 = await api().get('/api/mural').query({ igreja_id: igreja.id, limite: 2 }).set(lider.auth).expect(200);
+    assert.deepEqual(
+      pagina1.body.map((m) => m.conteudo),
+      ['de agora', 'de hoje'],
+    );
+
+    const pagina2 = await api()
+      .get('/api/mural')
+      .query({ igreja_id: igreja.id, limite: 2, antes_de: pagina1.body.at(-1).id })
+      .set(lider.auth)
+      .expect(200);
+    assert.deepEqual(
+      pagina2.body.map((m) => m.conteudo),
+      ['de dez dias atrás'],
     );
   });
 

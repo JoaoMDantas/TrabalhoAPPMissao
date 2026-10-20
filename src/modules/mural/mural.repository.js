@@ -8,7 +8,10 @@ const SELECT_MENSAGEM = `
   JOIN usuarios u ON u.id = m.autor_id
   LEFT JOIN igrejas i ON i.id = m.igreja_id`;
 
-/** Lista da mais nova para a mais antiga. "antes_de" (id) pagina sem repetir mensagens. */
+/**
+ * Lista da mais nova para a mais antiga pela data de publicação (no empate, pelo id).
+ * "antes_de" (id da última mensagem exibida) continua a lista na mesma ordem, sem repetir mensagens.
+ */
 export async function listar({ tipo, igreja_id: igrejaId, antes_de: antesDe, limite }) {
   const condicoes = [];
   const parametros = [];
@@ -22,12 +25,15 @@ export async function listar({ tipo, igreja_id: igrejaId, antes_de: antesDe, lim
     parametros.push(igrejaId);
   }
   if (antesDe) {
-    condicoes.push('m.id < ?');
-    parametros.push(antesDe);
+    condicoes.push('(m.criado_em, m.id) < ((SELECT criado_em FROM mensagens WHERE id = ?), ?)');
+    parametros.push(antesDe, antesDe);
   }
 
   parametros.push(limite);
-  return consultar(`${SELECT_MENSAGEM} ${montarWhere(condicoes)} ORDER BY m.id DESC LIMIT ?`, parametros);
+  return consultar(
+    `${SELECT_MENSAGEM} ${montarWhere(condicoes)} ORDER BY m.criado_em DESC, m.id DESC LIMIT ?`,
+    parametros,
+  );
 }
 
 export async function buscarPorId(id) {
