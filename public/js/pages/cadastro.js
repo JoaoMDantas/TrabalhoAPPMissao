@@ -19,7 +19,7 @@ export default function paginaCadastro({ el, navegar }) {
       <div class="tela-acesso">
         <div class="cartao-acesso">
           <div class="text-center mb-4">
-            <div class="logo-app"><i class="bi bi-person-plus" aria-hidden="true"></i></div>
+            <img class="logo-app" src="/icons/icon.svg" alt="" width="76" height="76">
             <h1 class="h4 fw-bold mb-1">Criar conta</h1>
             <p class="text-body-secondary mb-0">Faça parte da rede de igrejas e missionários</p>
           </div>

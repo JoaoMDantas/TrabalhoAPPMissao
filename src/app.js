@@ -48,6 +48,7 @@ export function criarApp() {
 
   app.use('/vendor/bootstrap', express.static(path.join(RAIZ, 'node_modules/bootstrap/dist')));
   app.use('/vendor/bootstrap-icons', express.static(path.join(RAIZ, 'node_modules/bootstrap-icons/font')));
+  app.use('/vendor/poppins', express.static(path.join(RAIZ, 'node_modules/@fontsource/poppins/files')));
   app.use(express.static(path.join(RAIZ, 'public')));
 
   app.use(tratarErros);

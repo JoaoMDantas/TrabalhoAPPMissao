@@ -9,7 +9,7 @@ export default function paginaLogin({ el, navegar }) {
       <div class="tela-acesso">
         <div class="cartao-acesso">
           <div class="text-center mb-4">
-            <div class="logo-app"><i class="bi bi-globe-americas" aria-hidden="true"></i></div>
+            <img class="logo-app" src="/icons/icon.svg" alt="" width="76" height="76">
             <h1 class="h3 fw-bold mb-1">Projeto Missionário</h1>
             <p class="text-body-secondary mb-0">Conectando igrejas e missionários</p>
           </div>

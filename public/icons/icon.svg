@@ -1,10 +1,25 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Projeto Missionário">
-  <rect width="512" height="512" rx="112" fill="#0f766e"/>
-  <g fill="none" stroke="#fff" stroke-width="22" stroke-linecap="round">
-    <circle cx="256" cy="256" r="154"/>
-    <ellipse cx="256" cy="256" rx="69" ry="154"/>
-    <line x1="102" y1="256" x2="410" y2="256"/>
-    <line x1="123" y1="179" x2="389" y2="179"/>
-    <line x1="123" y1="333" x2="389" y2="333"/>
+  <!-- Sol nascente sobre o horizonte e um caminho que leva até as comunidades. -->
+  <defs>
+    <linearGradient id="sol" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fdba74"/>
+      <stop offset="0.45" stop-color="#fb923c"/>
+      <stop offset="1" stop-color="#ea580c"/>
+    </linearGradient>
+    <clipPath id="ceu">
+      <rect width="512" height="300"/>
+    </clipPath>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="#101936"/>
+  <g stroke="#f97316" stroke-width="22" stroke-linecap="round">
+    <line x1="124.4" y1="252.1" x2="85" y2="237.8"/>
+    <line x1="175.7" y1="185.3" x2="151.6" y2="150.9"/>
+    <line x1="256" y1="160" x2="256" y2="118"/>
+    <line x1="336.3" y1="185.3" x2="360.4" y2="150.9"/>
+    <line x1="387.6" y1="252.1" x2="427" y2="237.8"/>
   </g>
+  <circle cx="256" cy="300" r="112" fill="url(#sol)" clip-path="url(#ceu)"/>
+  <rect x="92" y="296" width="328" height="16" rx="8" fill="#fff"/>
+  <path d="M206 446 L306 446 L268 318 L244 318 Z" fill="#fff"/>
+  <path d="M256 334 V356 M256 376 V402 M256 420 V440" stroke="#101936" stroke-width="8" stroke-linecap="round"/>
 </svg>

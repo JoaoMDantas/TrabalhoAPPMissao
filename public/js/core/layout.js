@@ -19,7 +19,7 @@ function montarCasca(app) {
             <i class="bi bi-arrow-left"></i>
           </button>
           <a class="marca" href="#/inicio" data-marca>
-            <span class="marca-icone"><i class="bi bi-globe-americas"></i></span>
+            <img class="marca-icone" src="/icons/icon.svg" alt="" width="34" height="34">
             <span>Projeto Missionário</span>
           </a>
           <h1 class="titulo-tela" data-titulo hidden></h1>

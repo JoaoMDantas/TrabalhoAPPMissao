@@ -1,5 +1,5 @@
 // Ao mudar arquivos essenciais, aumente a versão para que os aparelhos descartem o cache antigo.
-const CACHE = 'projeto-missionario-v3';
+const CACHE = 'projeto-missionario-v4';
 
 const ARQUIVOS_ESSENCIAIS = [
   '/',
@@ -11,6 +11,10 @@ const ARQUIVOS_ESSENCIAIS = [
   '/vendor/bootstrap/css/bootstrap.min.css',
   '/vendor/bootstrap/js/bootstrap.bundle.min.js',
   '/vendor/bootstrap-icons/bootstrap-icons.min.css',
+  '/vendor/poppins/poppins-latin-400-normal.woff2',
+  '/vendor/poppins/poppins-latin-500-normal.woff2',
+  '/vendor/poppins/poppins-latin-600-normal.woff2',
+  '/vendor/poppins/poppins-latin-700-normal.woff2',
 ];
 
 self.addEventListener('install', (evento) => {
