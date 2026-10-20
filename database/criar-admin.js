@@ -12,6 +12,11 @@ async function criarAdmin() {
     console.log('ADMIN_EMAIL/ADMIN_SENHA não definidos: nenhuma conta de administrador criada.');
     return;
   }
+  // Mesma regra do cadastro de pessoas: o admin não pode ter uma senha mais fraca que a dos usuários.
+  if (senha.length < 8) {
+    console.log('ADMIN_SENHA precisa ter pelo menos 8 caracteres: nenhuma conta de administrador criada.');
+    return;
+  }
   if (await consultarUm('SELECT id FROM usuarios WHERE email = ?', [email])) return;
 
   await consultar('INSERT INTO usuarios (nome, email, senha_hash, papel) VALUES (?, ?, ?, ?)', [

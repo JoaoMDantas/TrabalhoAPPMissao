@@ -1,6 +1,6 @@
 {
   "name": "projeto-missionario",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Aplicativo (PWA) para conectar igrejas e missionários",
   "type": "module",
   "main": "src/server.js",
