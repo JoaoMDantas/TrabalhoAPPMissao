@@ -22,17 +22,23 @@ export const telefoneOpcional = opcional(
 );
 
 /** Coordenada do mapa em graus decimais, arredondada a 6 casas (cerca de 10 cm). */
-const coordenada = (limite, mensagem) =>
-  opcional(
-    z.coerce
-      .number({ error: mensagem })
-      .min(-limite, mensagem)
-      .max(limite, mensagem)
-      .transform((valor) => Math.round(valor * 1e6) / 1e6),
-  );
+const grausDecimais = (limite, mensagem) =>
+  z
+    .number({ error: mensagem })
+    .min(-limite, mensagem)
+    .max(limite, mensagem)
+    .transform((valor) => Math.round(valor * 1e6) / 1e6);
 
-export const latitude = coordenada(90, 'Latitude inválida.');
-export const longitude = coordenada(180, 'Longitude inválida.');
+// O formulário envia texto: vazio vira null (opcional) ou ausente (obrigatório); o resto vira número.
+const coordenadaOpcional = (limite, mensagem) =>
+  z.preprocess((valor) => (vazioParaNulo(valor) === null ? null : Number(valor)), grausDecimais(limite, mensagem).nullable());
+const coordenadaObrigatoria = (limite, mensagem) =>
+  z.preprocess((valor) => (vazioParaNulo(valor) === null ? undefined : Number(valor)), grausDecimais(limite, mensagem));
+
+export const latitude = coordenadaOpcional(90, 'Latitude inválida.');
+export const longitude = coordenadaOpcional(180, 'Longitude inválida.');
+export const latitudeObrigatoria = coordenadaObrigatoria(90, 'Marque o local no mapa.');
+export const longitudeObrigatoria = coordenadaObrigatoria(180, 'Marque o local no mapa.');
 
 /** Latitude e longitude andam juntas: as duas preenchidas ou as duas vazias. */
 export const coordenadasCompletas = [
@@ -84,6 +90,12 @@ export const dataHora = z
     const normalizado = valor.replace('T', ' ');
     return normalizado.length === 16 ? `${normalizado}:00` : normalizado;
   });
+
+/** Data "AAAA-MM-DD" (campo date), conferida no calendário. */
+export const data = z
+  .string({ error: 'Informe a data.' })
+  .trim()
+  .refine((valor) => PADRAO_DATA.test(valor) && existeNoCalendario(valor), 'Data inválida.');
 
 /** Filtro de período: aceita só a data ("AAAA-MM-DD") ou data e hora. */
 export const dataOuDataHora = z

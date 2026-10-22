@@ -163,9 +163,15 @@ export function limparErrosFormulario(form) {
 export function mostrarErroFormulario(form, erro) {
   limparErrosFormulario(form);
   let primeiroCampo = null;
+  const mensagensGerais = [];
 
   for (const { campo, mensagem } of erro.detalhes ?? []) {
     const elemento = form.elements.namedItem(campo);
+    // Campos ocultos (ex.: coordenadas do mapa) não têm onde exibir a mensagem: ela vai para o alerta.
+    if (elemento instanceof HTMLInputElement && elemento.type === 'hidden') {
+      if (!mensagensGerais.includes(mensagem)) mensagensGerais.push(mensagem);
+      continue;
+    }
     if (!(elemento instanceof HTMLElement) || elemento.classList.contains('is-invalid')) continue;
 
     elemento.classList.add('is-invalid');
@@ -180,16 +186,18 @@ export function mostrarErroFormulario(form, erro) {
     primeiroCampo ??= elemento;
   }
 
-  if (primeiroCampo) {
-    primeiroCampo.focus();
-    return;
+  if (!primeiroCampo && !mensagensGerais.length) mensagensGerais.push(erro.message);
+  if (mensagensGerais.length) {
+    const alerta = form.querySelector('[data-erro]');
+    if (!alerta) {
+      avisar(mensagensGerais.join(' '), 'erro');
+    } else {
+      alerta.textContent = mensagensGerais.join(' ');
+      alerta.classList.remove('d-none');
+      if (!primeiroCampo) alerta.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
   }
-
-  const alerta = form.querySelector('[data-erro]');
-  if (!alerta) return avisar(erro.message, 'erro');
-  alerta.textContent = erro.message;
-  alerta.classList.remove('d-none');
-  alerta.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  primeiroCampo?.focus();
 }
 
 export function alternarEnvio(botao, enviando, texto = 'Enviando...') {

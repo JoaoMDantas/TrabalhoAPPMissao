@@ -910,6 +910,103 @@ a.cartao-dica:hover {
   color: var(--pm-destaque);
 }
 
+/* Visitas: a cor do alfinete mostra a situação. */
+.marcador-realizada .marcador-alfinete,
+.fundo-realizada {
+  background: #16a34a;
+  color: #fff;
+}
+
+.marcador-retornar .marcador-alfinete,
+.fundo-retornar {
+  background: var(--pm-primaria);
+  color: #fff;
+}
+
+.marcador-ausente .marcador-alfinete,
+.fundo-ausente {
+  background: #64748b;
+  color: #fff;
+}
+
+.fundo-igreja {
+  background: var(--pm-noite);
+}
+
+.situacao-realizada { background: #dcfce7; color: #166534; }
+.situacao-retornar { background: #ffedd5; color: #9a3412; }
+.situacao-ausente { background: #e5e7eb; color: #374151; }
+.tipo-visita-geral { background: #e0e7ff; color: #3730a3; }
+
+.mapa-invalido {
+  box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.55);
+}
+
+.legenda-mapa {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 1rem;
+  margin: 0.6rem 0 0;
+  padding: 0;
+  color: var(--pm-texto-suave);
+  font-size: 0.75rem;
+  list-style: none;
+}
+
+.legenda-mapa li {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.ponto-legenda {
+  width: 12px;
+  height: 12px;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(16, 25, 54, 0.3);
+}
+
+.numeros-resumo {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  text-align: center;
+}
+
+.numeros-resumo div {
+  padding: 0.6rem 0.25rem;
+  border-radius: 14px;
+  background: var(--pm-fundo);
+}
+
+.numeros-resumo strong {
+  display: block;
+  color: var(--pm-noite);
+  font-size: 1.35rem;
+  line-height: 1.2;
+}
+
+.numeros-resumo span {
+  color: var(--pm-texto-suave);
+  font-size: 0.72rem;
+  line-height: 1.2;
+}
+
+/* Seletor duplo: a regra base de .opcoes-papel (2 colunas) vem depois, na seção de cadastro. */
+.opcoes-papel.opcoes-tres {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.opcoes-papel.opcoes-tres label {
+  font-size: 0.8rem;
+}
+
+.aviso-privacidade {
+  display: flex;
+  gap: 0.4rem;
+}
+
 .mapa .leaflet-popup-content-wrapper {
   border-radius: 14px;
 }

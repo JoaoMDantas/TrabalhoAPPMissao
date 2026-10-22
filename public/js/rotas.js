@@ -33,6 +33,11 @@ export const rotas = [
   },
   { caminho: '/missionarios/:id', titulo: 'Perfil', pagina: pagina('missionario-detalhe') },
 
+  { caminho: '/visitas', titulo: 'Mapa de visitas', pagina: pagina('visitas') },
+  { caminho: '/visitas/nova', titulo: 'Registrar visita', pagina: pagina('visita-form') },
+  { caminho: '/visitas/:id', titulo: 'Visita', pagina: pagina('visita-detalhe') },
+  { caminho: '/visitas/:id/editar', titulo: 'Editar visita', pagina: pagina('visita-form') },
+
   { caminho: '/capacitacao', titulo: 'Capacitação', pagina: pagina('capacitacao') },
   { caminho: '/capacitacao/novo', titulo: 'Novo material', pagina: pagina('material-form') },
   { caminho: '/capacitacao/:id/ler', titulo: 'Leitura', pagina: pagina('material-leitor') },

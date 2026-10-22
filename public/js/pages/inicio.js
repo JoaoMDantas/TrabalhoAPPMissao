@@ -45,7 +45,7 @@ export default async function paginaInicio({ el }) {
         <a class="atalho" href="#/agenda/novo"><i class="bi bi-calendar-plus" aria-hidden="true"></i>Novo evento</a>
         <a class="atalho" href="#/mural"><i class="bi bi-pencil-square" aria-hidden="true"></i>Escrever no mural</a>
         <a class="atalho" href="#/capacitacao"><i class="bi bi-mortarboard" aria-hidden="true"></i>Capacitação</a>
-        <a class="atalho" href="#/missionarios"><i class="bi bi-people" aria-hidden="true"></i>Missionários</a>
+        <a class="atalho" href="#/visitas"><i class="bi bi-geo-alt" aria-hidden="true"></i>Mapa de visitas</a>
       </nav>
 
       <div class="secao-titulo">

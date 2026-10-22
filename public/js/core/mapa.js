@@ -25,10 +25,15 @@ export async function carregarLeaflet() {
   return leaflet;
 }
 
-/** Cria um mapa do OpenStreetMap no elemento. Devolve { L, mapa }. */
-export async function criarMapa(elemento, { centro = CENTRO_SAO_LUIS, zoom = 12, ...opcoes } = {}) {
+/**
+ * Cria um mapa do OpenStreetMap no elemento. Devolve { L, mapa }.
+ * Com "aoSair" (da tela), o mapa é encerrado quando a pessoa troca de tela.
+ */
+export async function criarMapa(elemento, { centro = CENTRO_SAO_LUIS, zoom = 12, aoSair, ...opcoes } = {}) {
   const L = await carregarLeaflet();
   const mapa = L.map(elemento, opcoes).setView(centro, zoom);
+  // Espera a animação de zoom (250 ms) terminar: o Leaflet 1.9 dá erro se o mapa for removido no meio dela.
+  aoSair?.(() => setTimeout(() => mapa.remove(), 300));
   L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>',

@@ -53,9 +53,8 @@ export default async function paginaIgrejas({ el, query, aoSair }) {
 
   async function desenharMapa() {
     if (!mapaIgrejas) {
-      const { L, mapa } = await criarMapa(el.querySelector('[data-mapa]'));
+      const { L, mapa } = await criarMapa(el.querySelector('[data-mapa]'), { aoSair });
       mapaIgrejas = { L, mapa, camada: L.layerGroup().addTo(mapa) };
-      aoSair(() => mapa.remove());
     }
     const { L, mapa, camada } = mapaIgrejas;
     mapa.invalidateSize();

@@ -40,8 +40,10 @@ export async function montarSeletorLocal(
   );
 
   const temPonto = latitude !== null && longitude !== null;
-  const { L, mapa } = await criarMapa(container.querySelector('[data-mapa]'), temPonto ? { centro: [latitude, longitude], zoom: 17 } : {});
-  aoSair?.(() => mapa.remove());
+  const { L, mapa } = await criarMapa(container.querySelector('[data-mapa]'), {
+    ...(temPonto ? { centro: [latitude, longitude], zoom: 17 } : {}),
+    aoSair,
+  });
 
   const campoLatitude = container.querySelector('[name="latitude"]');
   const campoLongitude = container.querySelector('[name="longitude"]');
@@ -56,6 +58,12 @@ export async function montarSeletorLocal(
     campoLongitude.value = arredondar(lng);
     botaoRemover.hidden = false;
     textoAjuda.textContent = 'Local marcado. Se precisar, arraste o alfinete para ajustar.';
+    container.querySelector('.mapa').classList.remove('mapa-invalido');
+  }
+
+  function trocarSimbolo(novo) {
+    simbolo = novo;
+    marcador?.setIcon(icone(L, { simbolo }));
   }
 
   function marcar(lat, lng, { centralizar = false } = {}) {
@@ -157,5 +165,5 @@ export async function montarSeletorLocal(
     );
   });
 
-  return { marcar, limpar, mapa };
+  return { marcar, limpar, trocarSimbolo, mapa };
 }

@@ -91,10 +91,10 @@ export default async function paginaIgreja({ el, params, navegar, aoSair }) {
       boxZoom: false,
       keyboard: false,
       zoomControl: false,
+      aoSair,
     })
       .then(({ L, mapa }) => {
         L.marker(ponto, { icon: icone(L, { simbolo: 'building', classe: 'marcador-igreja' }), interactive: false }).addTo(mapa);
-        aoSair(() => mapa.remove());
       })
       .catch((erro) => console.error(erro));
   }
