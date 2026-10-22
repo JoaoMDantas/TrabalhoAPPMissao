@@ -12,6 +12,18 @@ const rotasCompiladas = rotas.map((rota) => ({
 }));
 
 let navegacaoAtual = 0;
+// Tarefas de limpeza registradas pela tela atual (ex.: encerrar o leitor de PDF), executadas ao trocar de tela.
+let limpezas = [];
+
+function limparTelaAnterior() {
+  for (const limpar of limpezas.splice(0)) {
+    try {
+      limpar();
+    } catch (erro) {
+      console.error(erro);
+    }
+  }
+}
 
 function lerEndereco() {
   const [caminho, busca = ''] = (window.location.hash.slice(1) || '/').split('?');
@@ -40,6 +52,7 @@ export function navegar(caminho, { substituir = false } = {}) {
 
 async function resolver() {
   const id = ++navegacaoAtual;
+  limparTelaAnterior();
   const { caminho, query } = lerEndereco();
 
   if (caminho === '/') return navegar(sessao.logado ? '/inicio' : '/login', { substituir: true });
@@ -50,11 +63,13 @@ async function resolver() {
 
   document.title = `${rota.titulo} · Projeto Missionário`;
   const el = prepararTela(rota, caminho);
+  // A tela registra aqui o que deve ser encerrado quando a pessoa sair dela.
+  const aoSair = (limpar) => (id === navegacaoAtual ? limpezas.push(limpar) : limpar());
 
   try {
     const modulo = await rota.pagina();
     if (id !== navegacaoAtual) return;
-    await modulo.default({ el, params, query, navegar });
+    await modulo.default({ el, params, query, navegar, aoSair });
   } catch (erro) {
     if (id !== navegacaoAtual) return;
     console.error(erro);

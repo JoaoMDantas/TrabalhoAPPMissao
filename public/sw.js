@@ -1,5 +1,8 @@
 // Ao mudar arquivos essenciais, aumente a versão para que os aparelhos descartem o cache antigo.
-const CACHE = 'projeto-missionario-v4';
+const CACHE = 'projeto-missionario-v5';
+// PDFs da trilha de capacitação ficam num cache à parte, mantido entre versões do app, para ler sem internet.
+const CACHE_ARQUIVOS = 'projeto-missionario-arquivos';
+const ARQUIVO_DE_MATERIAL = /^\/api\/materiais\/\d+\/arquivo$/;
 
 const ARQUIVOS_ESSENCIAIS = [
   '/',
@@ -30,17 +33,37 @@ self.addEventListener('activate', (evento) => {
   evento.waitUntil(
     caches
       .keys()
-      .then((chaves) => Promise.all(chaves.filter((chave) => chave !== CACHE).map((chave) => caches.delete(chave))))
+      .then((chaves) =>
+        Promise.all(
+          chaves.filter((chave) => chave !== CACHE && chave !== CACHE_ARQUIVOS).map((chave) => caches.delete(chave)),
+        ),
+      )
       .then(() => self.clients.claim()),
   );
 });
 
+// PDF de material: usa a cópia guardada no aparelho; se ainda não houver, baixa e guarda para a próxima vez.
+async function arquivoGuardado(evento) {
+  const cache = await caches.open(CACHE_ARQUIVOS);
+  const guardado = await cache.match(evento.request);
+  if (guardado) return guardado;
+  const resposta = await fetch(evento.request);
+  if (resposta.ok) evento.waitUntil(cache.put(evento.request, resposta.clone()));
+  return resposta;
+}
+
 // Rede primeiro: busca sempre a versão mais nova e usa o cache apenas sem internet.
-// A API nunca é guardada em cache, para não exibir dados desatualizados ou de outra conta.
+// A API nunca é guardada em cache, para não exibir dados desatualizados ou de outra conta
+// (a exceção são os PDFs da trilha, que são públicos e não mudam).
 self.addEventListener('fetch', (evento) => {
   const { request } = evento;
   const url = new URL(request.url);
-  if (request.method !== 'GET' || url.origin !== self.location.origin || url.pathname.startsWith('/api/')) return;
+  if (request.method !== 'GET' || url.origin !== self.location.origin) return;
+  if (ARQUIVO_DE_MATERIAL.test(url.pathname)) {
+    evento.respondWith(arquivoGuardado(evento));
+    return;
+  }
+  if (url.pathname.startsWith('/api/')) return;
 
   evento.respondWith(
     fetch(request)

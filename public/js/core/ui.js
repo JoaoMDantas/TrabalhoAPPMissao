@@ -192,11 +192,11 @@ export function mostrarErroFormulario(form, erro) {
   alerta.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
 }
 
-export function alternarEnvio(botao, enviando) {
+export function alternarEnvio(botao, enviando, texto = 'Enviando...') {
   if (enviando) {
     botao.dataset.conteudoOriginal = botao.innerHTML;
     botao.disabled = true;
-    botao.innerHTML = '<span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>Enviando...';
+    botao.innerHTML = `<span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>${escaparHtml(texto)}`;
     return;
   }
   botao.disabled = false;

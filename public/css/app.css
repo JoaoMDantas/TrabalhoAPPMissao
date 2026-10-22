@@ -923,7 +923,15 @@ a.cartao-dica:hover {
 .item-material-titulo {
   color: var(--pm-noite);
   font-weight: 600;
+  overflow-wrap: anywhere;
   text-decoration: none;
+}
+
+.acoes-material {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.65rem;
 }
 
 .item-material-titulo:hover {
@@ -943,6 +951,83 @@ a.cartao-dica:hover {
 .tipo-material-pdf { background: #fee2e2; color: #b91c1c; }
 .tipo-material-video { background: #ffedd5; color: #c2410c; }
 .tipo-material-link { background: #dbeafe; color: #1e40af; }
+
+/* --- Leitor de PDF --- */
+.leitor-cabecalho {
+  margin-bottom: 0.75rem;
+}
+
+.leitor-barra {
+  position: sticky;
+  top: calc(var(--pm-altura-topo) + env(safe-area-inset-top));
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 -1rem 0.75rem;
+  padding: 0.5rem 1rem;
+  background: rgba(238, 241, 248, 0.94);
+  backdrop-filter: blur(6px);
+}
+
+.leitor-paginacao {
+  flex: 1;
+  min-width: 0;
+  color: var(--pm-texto-suave);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.leitor-paginas {
+  --zoom: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+  overflow-x: auto;
+}
+
+.leitor-pagina {
+  flex: 0 0 auto;
+  width: calc(100% * var(--zoom));
+  overflow: hidden;
+  border-radius: 6px;
+  background: #fff;
+  box-shadow: var(--pm-sombra);
+  scroll-margin-top: calc(var(--pm-altura-topo) + 4rem);
+}
+
+/* Enquanto a página não é desenhada, mostra só o número dela. */
+.leitor-pagina:empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.leitor-pagina:empty::after {
+  content: attr(data-pagina);
+  color: #c7cee0;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.leitor-pagina canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.leitor-fim {
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.leitor-erro > .bi {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #aab3cc;
+  font-size: 2.5rem;
+}
 
 .cartao-senha {
   background: #fff7ed;

@@ -13,4 +13,5 @@ export const erros = {
   semPermissao: (mensagem = 'Você não tem permissão para realizar esta ação.') => new AppError(403, mensagem),
   naoEncontrado: (mensagem = 'Registro não encontrado.') => new AppError(404, mensagem),
   conflito: (mensagem = 'Este registro já existe.') => new AppError(409, mensagem),
+  servicoExterno: (mensagem = 'O site de origem não respondeu como esperado.') => new AppError(502, mensagem),
 };

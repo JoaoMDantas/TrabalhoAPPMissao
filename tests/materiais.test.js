@@ -1,6 +1,7 @@
 import './setup-env.js';
 import assert from 'node:assert/strict';
 import { after, describe, test } from 'node:test';
+import { linkDeDownload, nomeDoArquivo } from '../src/modules/materiais/materiais.service.js';
 import { api, criarUsuario, encerrarBanco } from './helpers.js';
 
 after(encerrarBanco);
@@ -65,5 +66,74 @@ describe('Trilha de capacitação', () => {
     const { body: outroCriado } = await api().post('/api/materiais').set(autor.auth).send(material).expect(201);
     await api().delete(`/api/materiais/${outroCriado.id}`).set(admin.auth).expect(204);
     await api().delete(`/api/materiais/${outroCriado.id}`).set(admin.auth).expect(404);
+  });
+});
+
+// Lê o corpo binário da resposta (o PDF) como Buffer.
+const comoBuffer = (resposta, pronto) => {
+  const pedacos = [];
+  resposta.on('data', (pedaco) => pedacos.push(pedaco));
+  resposta.on('end', () => pronto(null, Buffer.concat(pedacos)));
+};
+
+describe('Leitura de PDF no aplicativo', () => {
+  test('entrega o PDF do guia rápido para o leitor, exigindo login', async () => {
+    const pessoa = await criarUsuario();
+    const { body: materiais } = await api().get('/api/materiais').set(pessoa.auth).expect(200);
+    const guia = materiais.find((m) => m.url === '/materiais/guia-rapido.pdf');
+
+    const { body: detalhe } = await api().get(`/api/materiais/${guia.id}`).set(pessoa.auth).expect(200);
+    assert.equal(detalhe.titulo, guia.titulo);
+
+    await api().get(`/api/materiais/${guia.id}/arquivo`).expect(401);
+    const resposta = await api()
+      .get(`/api/materiais/${guia.id}/arquivo`)
+      .set(pessoa.auth)
+      .buffer(true)
+      .parse(comoBuffer)
+      .expect(200);
+
+    assert.equal(resposta.headers['content-type'], 'application/pdf');
+    assert.match(resposta.headers['content-disposition'], /filename="guia-rapido-do-projeto-missionario\.pdf"/);
+    assert.match(resposta.headers['cache-control'], /max-age/);
+    assert.equal(resposta.body.subarray(0, 5).toString(), '%PDF-');
+  });
+
+  test('recusa material inexistente ou que não é PDF', async () => {
+    const pessoa = await criarUsuario();
+    const { body: materiais } = await api().get('/api/materiais').set(pessoa.auth).expect(200);
+    const video = materiais.find((m) => m.tipo === 'video');
+
+    await api().get('/api/materiais/999999').set(pessoa.auth).expect(404);
+    await api().get('/api/materiais/999999/arquivo').set(pessoa.auth).expect(404);
+    const resposta = await api().get(`/api/materiais/${video.id}/arquivo`).set(pessoa.auth).expect(400);
+    assert.equal(resposta.body.erro.mensagem, 'Este material não é um PDF.');
+  });
+
+  test('não busca arquivos na rede interna do servidor (proteção contra SSRF)', async () => {
+    const lider = await criarUsuario({ papel: 'lider' });
+    const enderecos = [
+      'https://127.0.0.1/arquivo.pdf',
+      'https://localhost/arquivo.pdf',
+      'https://169.254.169.254/latest/meta-data.pdf',
+      'https://[::1]/arquivo.pdf',
+      'https://exemplo.com:8443/arquivo.pdf',
+      'http://exemplo.com/arquivo.pdf',
+    ];
+    for (const url of enderecos) {
+      const { body: criado } = await api().post('/api/materiais').set(lider.auth).send({ ...material, url }).expect(201);
+      const resposta = await api().get(`/api/materiais/${criado.id}/arquivo`).set(lider.auth).expect(400);
+      assert.match(resposta.body.erro.mensagem, /não é permitido|https/, url);
+    }
+  });
+
+  test('converte links do Google Drive e gera nomes de arquivo seguros', () => {
+    assert.equal(
+      linkDeDownload('https://drive.google.com/file/d/1KdyJxkJlR_pSPbiE3QDbrwjiPWyIArr9/view'),
+      'https://drive.google.com/uc?export=download&id=1KdyJxkJlR_pSPbiE3QDbrwjiPWyIArr9',
+    );
+    assert.equal(linkDeDownload('https://exemplo.com/a.pdf'), 'https://exemplo.com/a.pdf');
+    assert.equal(nomeDoArquivo('Revista Evangelização 01: "A seleção"'), 'revista-evangelizacao-01-a-selecao.pdf');
+    assert.equal(nomeDoArquivo('???'), 'material.pdf');
   });
 });

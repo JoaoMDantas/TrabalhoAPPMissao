@@ -1,26 +1,9 @@
 import { api } from '../core/api.js';
+import { baixarPdf } from '../core/arquivos.js';
+import { guardarTrilha, lerConcluidos, salvarConcluidos } from '../core/progresso.js';
 import { TIPOS_MATERIAL } from '../core/rotulos.js';
 import { sessao } from '../core/sessao.js';
-import { avisar, confirmar, estadoVazio, html, render } from '../core/ui.js';
-
-// O progresso de estudo é pessoal e fica salvo apenas neste aparelho.
-const chaveProgresso = () => `pm.capacitacao.${sessao.usuario.id}`;
-
-function lerConcluidos() {
-  try {
-    return new Set(JSON.parse(localStorage.getItem(chaveProgresso())) ?? []);
-  } catch {
-    return new Set();
-  }
-}
-
-function salvarConcluidos(ids) {
-  try {
-    localStorage.setItem(chaveProgresso(), JSON.stringify([...ids]));
-  } catch {
-    // Sem armazenamento disponível: o progresso vale só enquanto a tela estiver aberta.
-  }
-}
+import { alternarEnvio, avisar, confirmar, estadoVazio, html, render } from '../core/ui.js';
 
 function agruparPorEtapa(materiais) {
   const grupos = new Map();
@@ -31,28 +14,42 @@ function agruparPorEtapa(materiais) {
   return grupos;
 }
 
+// PDFs abrem no leitor do próprio app; vídeos e sites abrem em uma nova aba.
+function linkPrincipal(material) {
+  return material.tipo === 'pdf'
+    ? html`href="#/capacitacao/${material.id}/ler"`
+    : html`href="${material.url}" target="_blank" rel="noopener"`;
+}
+
 function itemMaterial(material, concluido) {
   const tipo = TIPOS_MATERIAL[material.tipo] ?? TIPOS_MATERIAL.link;
   return html`
     <article class="item-material ${concluido ? 'concluido' : ''}">
       <span class="icone-quadrado tipo-material-${material.tipo}"><i class="bi bi-${tipo.icone}" aria-hidden="true"></i></span>
       <div class="flex-grow-1 min-w-0">
-        <a class="item-material-titulo" href="${material.url}" target="_blank" rel="noopener">
-          ${material.titulo} <i class="bi bi-box-arrow-up-right small" aria-hidden="true"></i>
-        </a>
-        ${material.descricao ? html`<p class="item-material-descricao">${material.descricao}</p>` : ''}
-        <div class="d-flex flex-wrap align-items-center gap-2 mt-2">
-          <span class="badge rounded-pill text-bg-light">${tipo.rotulo}</span>
-          <button type="button" class="btn btn-sm ${concluido ? 'btn-success' : 'btn-outline-success'}"
-            data-concluir="${material.id}" aria-pressed="${concluido}">
-            <i class="bi bi-${concluido ? 'check-circle-fill' : 'circle'}" aria-hidden="true"></i>
-            ${concluido ? 'Concluído' : 'Marcar como concluído'}
-          </button>
+        <div class="d-flex align-items-start gap-2">
+          <a class="item-material-titulo flex-grow-1" ${linkPrincipal(material)}>${material.titulo}</a>
           ${material.pode_excluir
-            ? html`<button type="button" class="btn-icone btn-icone-sm ms-auto" data-excluir="${material.id}" aria-label="Excluir material">
+            ? html`<button type="button" class="btn-icone btn-icone-sm" data-excluir="${material.id}" aria-label="Excluir material">
                 <i class="bi bi-trash3"></i>
               </button>`
             : ''}
+        </div>
+        ${material.descricao ? html`<p class="item-material-descricao">${material.descricao}</p>` : ''}
+        <div class="acoes-material">
+          <a class="btn btn-primary btn-sm" ${linkPrincipal(material)}>
+            <i class="bi bi-${tipo.iconeAcao}" aria-hidden="true"></i> ${tipo.acao}
+          </a>
+          ${material.tipo === 'pdf'
+            ? html`<button type="button" class="btn btn-outline-primary btn-sm" data-baixar="${material.id}">
+                <i class="bi bi-download" aria-hidden="true"></i> Baixar
+              </button>`
+            : ''}
+        </div>
+        <div class="form-check mt-2 mb-0">
+          <input class="form-check-input" type="checkbox" id="concluido-${material.id}" data-concluir="${material.id}"
+            ${concluido ? 'checked' : ''}>
+          <label class="form-check-label small" for="concluido-${material.id}">Concluí este material</label>
         </div>
       </div>
     </article>`;
@@ -61,6 +58,7 @@ function itemMaterial(material, concluido) {
 export default async function paginaCapacitacao({ el }) {
   const podeAdicionar = sessao.usuario.papel !== 'missionario';
   let materiais = await api.get('/materiais');
+  guardarTrilha(materiais);
   const concluidos = lerConcluidos();
 
   function desenhar() {
@@ -74,7 +72,8 @@ export default async function paginaCapacitacao({ el }) {
           <h1 class="h5 fw-bold mb-1"><i class="bi bi-mortarboard" aria-hidden="true"></i> Trilha de capacitação</h1>
           <p class="small text-body-secondary mb-3">
             Vídeos, revistas e roteiros sobre missões e evangelismo para fortalecer o trabalho de missionários e
-            igrejas. Abra cada material e marque quando concluir.
+            igrejas. Toque em <strong>Ler no app</strong> para abrir os PDFs aqui mesmo; depois de abertos, eles ficam
+            salvos no aparelho para ler sem internet.
           </p>
           <div class="d-flex justify-content-between small fw-semibold mb-1">
             <span>Seu progresso</span><span>${feitos} de ${materiais.length} concluídos</span>
@@ -101,13 +100,26 @@ export default async function paginaCapacitacao({ el }) {
   }
 
   el.addEventListener('click', async (evento) => {
-    const botaoConcluir = evento.target.closest('[data-concluir]');
-    if (botaoConcluir) {
-      const id = Number(botaoConcluir.dataset.concluir);
+    const caixaConcluir = evento.target.closest('[data-concluir]');
+    if (caixaConcluir) {
+      const id = Number(caixaConcluir.dataset.concluir);
       if (concluidos.has(id)) concluidos.delete(id);
       else concluidos.add(id);
       salvarConcluidos(concluidos);
       desenhar();
+      return;
+    }
+
+    const botaoBaixar = evento.target.closest('[data-baixar]');
+    if (botaoBaixar) {
+      alternarEnvio(botaoBaixar, true, 'Baixando...');
+      try {
+        await baixarPdf(Number(botaoBaixar.dataset.baixar));
+      } catch (erro) {
+        avisar(erro.message, 'erro');
+      } finally {
+        alternarEnvio(botaoBaixar, false);
+      }
       return;
     }
 
