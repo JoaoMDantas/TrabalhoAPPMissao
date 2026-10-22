@@ -11,6 +11,8 @@ export const pool = mysql.createPool({
   timezone: config.db.timezone,
   // Datas trafegam como texto 'AAAA-MM-DD HH:MM:SS', evitando conversões de fuso no Node.
   dateStrings: true,
+  // Colunas DECIMAL (ex.: coordenadas do mapa) chegam como número, e não como texto.
+  decimalNumbers: true,
   waitForConnections: true,
   connectionLimit: 10,
 });

@@ -1,3 +1,4 @@
+import { montarSeletorLocal } from '../components/seletor-local.js';
 import { api } from '../core/api.js';
 import { BAIRROS_SUGERIDOS } from '../core/rotulos.js';
 import { sessao } from '../core/sessao.js';
@@ -12,7 +13,7 @@ import {
   render,
 } from '../core/ui.js';
 
-export default async function paginaFormularioIgreja({ el, params, navegar }) {
+export default async function paginaFormularioIgreja({ el, params, navegar, aoSair }) {
   const editando = Boolean(params.id);
   const igreja = editando ? await api.get(`/igrejas/${params.id}`) : null;
 
@@ -53,6 +54,11 @@ export default async function paginaFormularioIgreja({ el, params, navegar }) {
           <label class="form-label" for="endereco">Endereço <span class="text-body-secondary">(opcional)</span></label>
           <input class="form-control" id="endereco" name="endereco" maxlength="200" value="${valores.endereco ?? ''}">
         </div>
+        <fieldset class="mb-3">
+          <legend class="form-label fs-6 mb-1">Localização no mapa <span class="text-body-secondary">(opcional)</span></legend>
+          <p class="small text-body-secondary mb-2">Ajuda os irmãos a encontrar a igreja e a traçar a rota até lá.</p>
+          <div data-seletor-local></div>
+        </fieldset>
         <div class="row g-3 mb-4">
           <div class="col-sm-6">
             <label class="form-label" for="telefone">Telefone <span class="text-body-secondary">(opcional)</span></label>
@@ -68,6 +74,26 @@ export default async function paginaFormularioIgreja({ el, params, navegar }) {
         <button class="btn btn-primary w-100" type="submit">${editando ? 'Salvar alterações' : 'Cadastrar igreja'}</button>
       </form>`,
   );
+
+  const seletor = el.querySelector('[data-seletor-local]');
+  try {
+    await montarSeletorLocal(seletor, {
+      latitude: valores.latitude ?? null,
+      longitude: valores.longitude ?? null,
+      simbolo: 'building',
+      ajuda: 'Toque no mapa para marcar onde fica a igreja.',
+      aoSair,
+    });
+  } catch (erro) {
+    console.error(erro);
+    // Sem o mapa (ex.: sem internet), mantém a localização que já existia para não apagá-la ao salvar.
+    render(
+      seletor,
+      html`<p class="small text-body-secondary mb-0">Não foi possível carregar o mapa agora. Os outros dados podem ser salvos normalmente.</p>
+        <input type="hidden" name="latitude" value="${valores.latitude ?? ''}">
+        <input type="hidden" name="longitude" value="${valores.longitude ?? ''}">`,
+    );
+  }
 
   const form = el.querySelector('form');
   form.addEventListener('submit', async (evento) => {

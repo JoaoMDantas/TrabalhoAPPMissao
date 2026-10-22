@@ -92,4 +92,31 @@ describe('Igrejas', () => {
     assert.ok(campos.includes('cidade'));
     assert.ok(campos.includes('bairro'));
   });
+
+  test('guarda a localização no mapa, com latitude e longitude juntas', async () => {
+    const lider = await criarUsuario({ papel: 'lider' });
+    const base = { nome: 'Igreja no mapa', cidade: 'São Luís', bairro: 'Cohatrac' };
+
+    // Coordenadas chegam como número e são arredondadas a 6 casas.
+    const igreja = await criarIgreja(lider, { ...base, latitude: '-2.5307123', longitude: -44.3068 });
+    assert.equal(igreja.latitude, -2.530712);
+    assert.equal(igreja.longitude, -44.3068);
+    const { body: lista } = await api().get('/api/igrejas').query({ busca: 'Igreja no mapa' }).set(lider.auth).expect(200);
+    assert.ok(lista.some((i) => i.id === igreja.id && i.latitude === -2.530712));
+
+    const soUma = await api().post('/api/igrejas').set(lider.auth).send({ ...base, latitude: -2.5 }).expect(400);
+    assert.equal(soUma.body.erro.detalhes[0].campo, 'latitude');
+    for (const coordenadas of [{ latitude: 95, longitude: -44 }, { latitude: -2.5, longitude: -190 }, { latitude: 'abc', longitude: -44 }]) {
+      await api().post('/api/igrejas').set(lider.auth).send({ ...base, ...coordenadas }).expect(400);
+    }
+
+    // Campos vazios removem a localização.
+    const { body: semMapa } = await api()
+      .put(`/api/igrejas/${igreja.id}`)
+      .set(lider.auth)
+      .send({ ...base, latitude: '', longitude: '' })
+      .expect(200);
+    assert.equal(semMapa.latitude, null);
+    assert.equal(semMapa.longitude, null);
+  });
 });

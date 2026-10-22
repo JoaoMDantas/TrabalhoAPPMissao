@@ -36,7 +36,8 @@ for (const [rede, prefixo] of FAIXAS_IPV4) FAIXAS_BLOQUEADAS.addSubnet(rede, pre
 for (const [rede, prefixo] of FAIXAS_IPV6) FAIXAS_BLOQUEADAS.addSubnet(rede, prefixo, 'ipv6');
 
 const MAX_REDIRECIONAMENTOS = 5;
-const AGENTE = 'ProjetoMissionario/1.0 (+https://github.com/JoaoMDantas/TrabalhoAPPMissao)';
+/** Identificação do app nas chamadas a outros sites (alguns serviços, como o OpenStreetMap, exigem). */
+export const AGENTE = 'ProjetoMissionario/1.0 (+https://github.com/JoaoMDantas/TrabalhoAPPMissao)';
 
 const enderecoBloqueado = () => erros.requisicaoInvalida('O endereço do arquivo não é permitido.');
 

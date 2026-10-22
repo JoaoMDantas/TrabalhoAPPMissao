@@ -21,6 +21,25 @@ export const telefoneOpcional = opcional(
   z.string().trim().regex(/^[0-9()+\-\s]{8,20}$/, 'Telefone inválido. Use apenas números, espaços, parênteses ou hífen.'),
 );
 
+/** Coordenada do mapa em graus decimais, arredondada a 6 casas (cerca de 10 cm). */
+const coordenada = (limite, mensagem) =>
+  opcional(
+    z.coerce
+      .number({ error: mensagem })
+      .min(-limite, mensagem)
+      .max(limite, mensagem)
+      .transform((valor) => Math.round(valor * 1e6) / 1e6),
+  );
+
+export const latitude = coordenada(90, 'Latitude inválida.');
+export const longitude = coordenada(180, 'Longitude inválida.');
+
+/** Latitude e longitude andam juntas: as duas preenchidas ou as duas vazias. */
+export const coordenadasCompletas = [
+  (dados) => (dados.latitude === null) === (dados.longitude === null),
+  { message: 'Marque a localização no mapa novamente.', path: ['latitude'] },
+];
+
 export const emailObrigatorio = z
   .string({ error: 'Informe o e-mail.' })
   .trim()

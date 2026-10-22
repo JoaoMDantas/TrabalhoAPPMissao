@@ -2,7 +2,8 @@ import { consultar, consultarUm } from '../../config/database.js';
 import { montarWhere, termoLike } from '../../core/sql.js';
 
 const SELECT_IGREJA = `
-  SELECT i.id, i.nome, i.cidade, i.bairro, i.endereco, i.telefone, i.email, i.criado_por, i.criado_em,
+  SELECT i.id, i.nome, i.cidade, i.bairro, i.endereco, i.latitude, i.longitude, i.telefone, i.email,
+         i.criado_por, i.criado_em,
          (SELECT COUNT(*) FROM usuarios u WHERE u.igreja_id = i.id AND u.ativo = 1) AS total_membros
   FROM igrejas i`;
 
@@ -34,17 +35,29 @@ export async function existe(id) {
 
 export async function criar(dados, criadoPor) {
   const resultado = await consultar(
-    `INSERT INTO igrejas (nome, cidade, bairro, endereco, telefone, email, criado_por)
-     VALUES (?, ?, ?, ?, ?, ?, ?)`,
-    [dados.nome, dados.cidade, dados.bairro, dados.endereco, dados.telefone, dados.email, criadoPor],
+    `INSERT INTO igrejas (nome, cidade, bairro, endereco, latitude, longitude, telefone, email, criado_por)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    [
+      dados.nome,
+      dados.cidade,
+      dados.bairro,
+      dados.endereco,
+      dados.latitude,
+      dados.longitude,
+      dados.telefone,
+      dados.email,
+      criadoPor,
+    ],
   );
   return resultado.insertId;
 }
 
 export async function atualizar(id, dados) {
   await consultar(
-    'UPDATE igrejas SET nome = ?, cidade = ?, bairro = ?, endereco = ?, telefone = ?, email = ? WHERE id = ?',
-    [dados.nome, dados.cidade, dados.bairro, dados.endereco, dados.telefone, dados.email, id],
+    `UPDATE igrejas
+     SET nome = ?, cidade = ?, bairro = ?, endereco = ?, latitude = ?, longitude = ?, telefone = ?, email = ?
+     WHERE id = ?`,
+    [dados.nome, dados.cidade, dados.bairro, dados.endereco, dados.latitude, dados.longitude, dados.telefone, dados.email, id],
   );
 }
 

@@ -37,8 +37,12 @@ export function criarApp() {
   app.use(
     helmet({
       contentSecurityPolicy: {
-        // Mantém o app acessível por http no celular (ex.: http://192.168.0.10:3000) durante os testes na rede local.
-        directives: { upgradeInsecureRequests: null },
+        directives: {
+          // Mantém o app acessível por http no celular (ex.: http://192.168.0.10:3000) durante os testes na rede local.
+          upgradeInsecureRequests: null,
+          // Imagens do mapa (OpenStreetMap).
+          imgSrc: ["'self'", 'data:', 'https://tile.openstreetmap.org'],
+        },
       },
     }),
   );
@@ -49,6 +53,7 @@ export function criarApp() {
   app.use('/vendor/bootstrap', express.static(path.join(RAIZ, 'node_modules/bootstrap/dist')));
   app.use('/vendor/bootstrap-icons', express.static(path.join(RAIZ, 'node_modules/bootstrap-icons/font')));
   app.use('/vendor/poppins', express.static(path.join(RAIZ, 'node_modules/@fontsource/poppins/files')));
+  app.use('/vendor/leaflet', express.static(path.join(RAIZ, 'node_modules/leaflet/dist')));
   // Leitor de PDF (PDF.js). A versão "legacy" funciona também em celulares mais antigos.
   const PDFJS = path.join(RAIZ, 'node_modules/pdfjs-dist');
   app.use('/vendor/pdfjs/build', express.static(path.join(PDFJS, 'legacy/build')));

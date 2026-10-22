@@ -814,6 +814,118 @@ a.cartao-dica:hover {
   box-shadow: var(--pm-sombra), 0 0 0 0.25rem rgba(249, 115, 22, 0.2);
 }
 
+/* --- Alternador (ex.: Lista | Mapa) --- */
+.alternador {
+  display: inline-flex;
+  padding: 4px;
+  border-radius: 999px;
+  background: #e1e6f2;
+}
+
+.alternador-opcao {
+  padding: 0.35rem 0.95rem;
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  color: var(--pm-texto-suave);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.alternador-opcao[aria-pressed='true'] {
+  background: var(--pm-superficie);
+  box-shadow: 0 2px 6px rgba(16, 25, 54, 0.12);
+  color: var(--pm-noite);
+}
+
+/* --- Mapa --- */
+.mapa {
+  position: relative;
+  /* Cria um contexto próprio: os controles do mapa ficam abaixo da barra superior e do menu. */
+  z-index: 0;
+  overflow: hidden;
+  border-radius: var(--pm-raio);
+  background: #dfe6f1;
+  box-shadow: var(--pm-sombra);
+}
+
+/* O CSS do Leaflet é carregado depois deste; o seletor duplo garante a fonte e as cores do app. */
+.mapa.leaflet-container {
+  font-family: var(--pm-fonte);
+}
+
+.mapa.leaflet-container a {
+  color: var(--pm-primaria-mais-escura);
+}
+
+.mapa-seletor {
+  height: 260px;
+}
+
+.mapa-grande {
+  height: max(320px, calc(100dvh - 330px));
+}
+
+.cartao-mapa {
+  overflow: hidden;
+  padding: 0;
+}
+
+.cartao-mapa .mapa {
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.mapa-previa {
+  height: 190px;
+}
+
+.marcador {
+  border: 0;
+  background: none;
+}
+
+/* Alfinete: um quadrado com um canto reto, girado para apontar para baixo. */
+.marcador-alfinete {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 3px solid #fff;
+  border-radius: 50% 50% 50% 0;
+  background: var(--pm-primaria);
+  box-shadow: 0 6px 14px rgba(16, 25, 54, 0.35);
+  color: #fff;
+  font-size: 0.95rem;
+  transform: rotate(-45deg);
+}
+
+.marcador-alfinete .bi {
+  transform: rotate(45deg);
+}
+
+.marcador-igreja .marcador-alfinete {
+  background: var(--pm-noite);
+  color: var(--pm-destaque);
+}
+
+.mapa .leaflet-popup-content-wrapper {
+  border-radius: 14px;
+}
+
+.mapa .leaflet-popup-content {
+  margin: 12px 14px;
+  font-size: 0.85rem;
+  line-height: 1.45;
+}
+
+.resultados-endereco .list-group-item {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 /* --- Mural --- */
 .item-mensagem {
   padding: 0.95rem 1.05rem;

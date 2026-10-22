@@ -3,9 +3,33 @@ import { itemEvento } from '../components/evento.js';
 import { itemPessoa } from '../components/pessoa.js';
 import { api } from '../core/api.js';
 import { agoraParaApi } from '../core/formatos.js';
+import { criarMapa, icone, linkComoChegar, linkWaze, temLocalizacao } from '../core/mapa.js';
 import { avisar, confirmar, estadoVazio, html, render } from '../core/ui.js';
 
-export default async function paginaIgreja({ el, params, navegar }) {
+function secaoMapa(igreja) {
+  if (temLocalizacao(igreja)) {
+    return html`
+      <section class="cartao cartao-mapa mt-3">
+        <div class="mapa mapa-previa" data-mapa role="img" aria-label="Localização da igreja no mapa"></div>
+        <div class="d-flex flex-wrap gap-2 p-3">
+          <a class="btn btn-primary btn-sm" href="${linkComoChegar(igreja)}" target="_blank" rel="noopener">
+            <i class="bi bi-sign-turn-right" aria-hidden="true"></i> Como chegar
+          </a>
+          <a class="btn btn-outline-primary btn-sm" href="${linkWaze(igreja)}" target="_blank" rel="noopener">
+            <i class="bi bi-car-front" aria-hidden="true"></i> Abrir no Waze
+          </a>
+        </div>
+      </section>`;
+  }
+  if (!igreja.pode_editar) return '';
+  return html`
+    <a class="cartao cartao-dica mt-3" href="#/igrejas/${igreja.id}/editar">
+      <i class="bi bi-geo-alt" aria-hidden="true"></i>
+      <span class="small">Marque a localização da igreja no mapa para facilitar as visitas.</span>
+    </a>`;
+}
+
+export default async function paginaIgreja({ el, params, navegar, aoSair }) {
   const id = Number(params.id);
   const [igreja, membros, eventos] = await Promise.all([
     api.get(`/igrejas/${id}`),
@@ -23,6 +47,8 @@ export default async function paginaIgreja({ el, params, navegar }) {
         ${igreja.endereco ? html`<p class="small mb-0">${igreja.endereco}</p>` : ''}
         <div class="mt-3">${botoesContato(igreja, 'justify-content-center')}</div>
       </section>
+
+      ${secaoMapa(igreja)}
 
       ${igreja.pode_editar || igreja.pode_excluir
         ? html`<div class="d-flex gap-2 mt-3">
@@ -51,6 +77,27 @@ export default async function paginaIgreja({ el, params, navegar }) {
         ${membros.length ? membros.map(itemPessoa) : estadoVazio({ icone: 'people', titulo: 'Ninguém vinculado ainda' })}
       </div>`,
   );
+
+  if (temLocalizacao(igreja)) {
+    // Prévia fixa: não "prende" a rolagem da página no celular; para navegar, há os botões de rota.
+    const ponto = [igreja.latitude, igreja.longitude];
+    criarMapa(el.querySelector('[data-mapa]'), {
+      centro: ponto,
+      zoom: 16,
+      dragging: false,
+      touchZoom: false,
+      scrollWheelZoom: false,
+      doubleClickZoom: false,
+      boxZoom: false,
+      keyboard: false,
+      zoomControl: false,
+    })
+      .then(({ L, mapa }) => {
+        L.marker(ponto, { icon: icone(L, { simbolo: 'building', classe: 'marcador-igreja' }), interactive: false }).addTo(mapa);
+        aoSair(() => mapa.remove());
+      })
+      .catch((erro) => console.error(erro));
+  }
 
   el.querySelector('[data-acao="excluir"]')?.addEventListener('click', async () => {
     const confirmado = await confirmar({

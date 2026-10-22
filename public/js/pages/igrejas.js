@@ -1,11 +1,18 @@
 import { itemIgreja } from '../components/igreja.js';
 import { api } from '../core/api.js';
+import { criarMapa, icone, temLocalizacao } from '../core/mapa.js';
 import { sessao } from '../core/sessao.js';
 import { atrasar, blocoErro, carregando, estadoVazio, html, render } from '../core/ui.js';
 
-export default async function paginaIgrejas({ el, query }) {
+const conteudoPopup = (igreja) =>
+  html`<strong>${igreja.nome}</strong><br>
+    <span class="text-body-secondary">${igreja.bairro} · ${igreja.cidade}</span><br>
+    <a href="#/igrejas/${igreja.id}">Ver igreja</a>`.toString();
+
+export default async function paginaIgrejas({ el, query, aoSair }) {
   const podeCadastrar = sessao.usuario.papel !== 'missionario';
-  const buscaInicial = query.busca ?? '';
+  let busca = query.busca ?? '';
+  let modo = query.ver === 'mapa' ? 'mapa' : 'lista';
 
   render(
     el,
@@ -13,22 +20,79 @@ export default async function paginaIgrejas({ el, query }) {
       <div class="campo-busca mb-3">
         <i class="bi bi-search" aria-hidden="true"></i>
         <input type="search" class="form-control" placeholder="Buscar por nome, bairro ou cidade" aria-label="Buscar igrejas"
-          value="${buscaInicial}" data-busca>
+          value="${busca}" data-busca>
+      </div>
+      <div class="alternador mb-3" role="group" aria-label="Forma de exibição">
+        <button type="button" class="alternador-opcao" data-modo="lista"><i class="bi bi-list-ul" aria-hidden="true"></i> Lista</button>
+        <button type="button" class="alternador-opcao" data-modo="mapa"><i class="bi bi-map" aria-hidden="true"></i> Mapa</button>
       </div>
       <div class="lista" data-lista>${carregando()}</div>
+      <div data-area-mapa hidden>
+        <div class="mapa mapa-grande" data-mapa></div>
+        <p class="small text-body-secondary mt-2 mb-0" data-sem-local></p>
+      </div>
       ${podeCadastrar
         ? html`<a class="botao-flutuante" href="#/igrejas/nova" aria-label="Cadastrar igreja"><i class="bi bi-plus-lg"></i></a>`
         : ''}`,
   );
 
   const lista = el.querySelector('[data-lista]');
+  const areaMapa = el.querySelector('[data-area-mapa]');
+  let igrejas = [];
   let ultimaConsulta = 0;
+  let mapaIgrejas = null; // { L, mapa, camada }, criado na primeira vez que a pessoa abre o mapa
 
-  async function carregar(busca) {
+  // Guarda busca e forma de exibição no endereço, para que continuem ao voltar de uma igreja.
+  function atualizarEndereco() {
+    const parametros = new URLSearchParams();
+    if (busca) parametros.set('busca', busca);
+    if (modo === 'mapa') parametros.set('ver', 'mapa');
+    const texto = parametros.toString();
+    window.history.replaceState(null, '', texto ? `#/igrejas?${texto}` : '#/igrejas');
+  }
+
+  async function desenharMapa() {
+    if (!mapaIgrejas) {
+      const { L, mapa } = await criarMapa(el.querySelector('[data-mapa]'));
+      mapaIgrejas = { L, mapa, camada: L.layerGroup().addTo(mapa) };
+      aoSair(() => mapa.remove());
+    }
+    const { L, mapa, camada } = mapaIgrejas;
+    mapa.invalidateSize();
+    camada.clearLayers();
+
+    const noMapa = igrejas.filter(temLocalizacao);
+    for (const igreja of noMapa) {
+      L.marker([igreja.latitude, igreja.longitude], {
+        icon: icone(L, { simbolo: 'building', classe: 'marcador-igreja' }),
+        title: igreja.nome,
+      })
+        .bindPopup(conteudoPopup(igreja))
+        .addTo(camada);
+    }
+    if (noMapa.length) {
+      mapa.fitBounds(L.latLngBounds(noMapa.map((i) => [i.latitude, i.longitude])), { padding: [48, 48], maxZoom: 15 });
+    }
+
+    const semLocal = igrejas.length - noMapa.length;
+    el.querySelector('[data-sem-local]').textContent = semLocal
+      ? `${semLocal} ${semLocal === 1 ? 'igreja ainda não marcou' : 'igrejas ainda não marcaram'} a localização no mapa.`
+      : '';
+  }
+
+  function mostrar() {
+    el.querySelectorAll('[data-modo]').forEach((botao) => botao.setAttribute('aria-pressed', String(botao.dataset.modo === modo)));
+    lista.hidden = modo !== 'lista';
+    areaMapa.hidden = modo !== 'mapa';
+    if (modo === 'mapa') desenharMapa().catch((erro) => render(el.querySelector('[data-mapa]'), blocoErro(erro)));
+  }
+
+  async function carregar() {
     const consulta = ++ultimaConsulta;
     try {
-      const igrejas = await api.get('/igrejas', { busca });
+      const resultado = await api.get('/igrejas', { busca });
       if (consulta !== ultimaConsulta) return;
+      igrejas = resultado;
       render(
         lista,
         igrejas.length
@@ -39,6 +103,7 @@ export default async function paginaIgrejas({ el, query }) {
               acao: podeCadastrar && !busca ? { href: '#/igrejas/nova', rotulo: 'Cadastrar igreja' } : null,
             }),
       );
+      mostrar();
     } catch (erro) {
       if (consulta === ultimaConsulta) render(lista, blocoErro(erro));
     }
@@ -47,12 +112,20 @@ export default async function paginaIgrejas({ el, query }) {
   el.querySelector('[data-busca]').addEventListener(
     'input',
     atrasar((evento) => {
-      const busca = evento.target.value.trim();
-      // Guarda a busca no endereço, para que ela continue ao voltar de uma igreja.
-      window.history.replaceState(null, '', busca ? `#/igrejas?busca=${encodeURIComponent(busca)}` : '#/igrejas');
-      carregar(busca);
+      busca = evento.target.value.trim();
+      atualizarEndereco();
+      carregar();
     }),
   );
 
-  await carregar(buscaInicial);
+  el.querySelectorAll('[data-modo]').forEach((botao) =>
+    botao.addEventListener('click', () => {
+      modo = botao.dataset.modo;
+      atualizarEndereco();
+      mostrar();
+    }),
+  );
+
+  mostrar();
+  await carregar();
 }
