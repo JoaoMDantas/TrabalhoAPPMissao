@@ -119,4 +119,24 @@ describe('Igrejas', () => {
     assert.equal(semMapa.latitude, null);
     assert.equal(semMapa.longitude, null);
   });
+
+  test('atalho ajusta só a localização, com as mesmas permissões da edição', async () => {
+    const lider = await criarUsuario({ papel: 'lider' });
+    const outro = await criarUsuario({ papel: 'lider' });
+    const igreja = await criarIgreja(lider, { nome: 'Igreja do atalho', telefone: '(98) 3222-0000' });
+    const ajustar = (pessoa, dados) => api().patch(`/api/igrejas/${igreja.id}/localizacao`).set(pessoa.auth).send(dados);
+
+    const { body: ajustada } = await ajustar(lider, { latitude: -2.5351, longitude: -44.2044 }).expect(200);
+    assert.equal(ajustada.latitude, -2.5351);
+    assert.equal(ajustada.telefone, '(98) 3222-0000', 'os outros dados continuam iguais');
+    assert.equal(ajustada.pode_editar, true);
+
+    await ajustar(outro, { latitude: -2.6, longitude: -44.3 }).expect(403);
+    await ajustar(lider, { latitude: -2.6 }).expect(400);
+    const { body: lista } = await api().get('/api/igrejas').query({ busca: 'Igreja do atalho' }).set(outro.auth).expect(200);
+    assert.equal(lista[0].pode_editar, false, 'a lista informa quem pode ajustar');
+
+    const { body: semLocal } = await ajustar(lider, { latitude: null, longitude: null }).expect(200);
+    assert.equal(semLocal.latitude, null);
+  });
 });

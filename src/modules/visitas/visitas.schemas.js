@@ -23,6 +23,9 @@ export const filtrosVisitas = z.object({
   criado_por: opcional(id),
 });
 
+/** Só o local da visita no mapa (obrigatório). */
+export const esquemaLocalizacaoVisita = z.object({ latitude: latitudeObrigatoria, longitude: longitudeObrigatoria });
+
 export const esquemaVisita = z.object({
   tipo: z.enum(TIPOS_VISITA, { error: 'Escolha o tipo da visita.' }),
   situacao: z.enum(SITUACOES_VISITA, { error: 'Escolha como foi a visita.' }),

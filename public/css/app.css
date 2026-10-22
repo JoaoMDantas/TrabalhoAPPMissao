@@ -866,6 +866,11 @@ a.cartao-dica:hover {
   height: max(320px, calc(100dvh - 330px));
 }
 
+/* "Ajustar no mapa": o mapa ocupa quase toda a tela, para posicionar o alfinete com precisão. */
+.mapa-editor {
+  height: max(300px, calc(100dvh - 420px));
+}
+
 .cartao-mapa {
   overflow: hidden;
   padding: 0;

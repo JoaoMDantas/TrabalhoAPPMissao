@@ -16,6 +16,10 @@ export async function atualizar(req, res) {
   res.json(await servico.atualizar(req.usuario, req.valido.params.id, req.valido.body));
 }
 
+export async function atualizarLocalizacao(req, res) {
+  res.json(await servico.atualizarLocalizacao(req.usuario, req.valido.params.id, req.valido.body));
+}
+
 export async function excluir(req, res) {
   await servico.excluir(req.usuario, req.valido.params.id);
   res.status(204).end();

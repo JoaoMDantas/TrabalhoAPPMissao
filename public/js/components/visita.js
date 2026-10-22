@@ -25,7 +25,9 @@ export const iconeVisita = (L, visita) => icone(L, { simbolo: tipoVisita(visita.
 export const conteudoPopupVisita = (visita) =>
   html`<strong>${tipoVisita(visita.tipo).rotulo}</strong> · ${dataCurta(visita.data_visita)}<br>
     ${situacaoVisita(visita.situacao).rotulo}${visita.pessoas_alcancadas ? html`<br>${pessoasAlcancadas(visita.pessoas_alcancadas)}` : ''}<br>
-    <a href="#/visitas/${visita.id}">Ver detalhes</a>`.toString();
+    <a href="#/visitas/${visita.id}">Ver detalhes</a>${visita.pode_editar
+      ? html` · <a href="#/visitas/${visita.id}/local">Ajustar local</a>`
+      : ''}`.toString();
 
 export const itemVisita = (visita) => html`
   <a class="item-lista" href="#/visitas/${visita.id}">

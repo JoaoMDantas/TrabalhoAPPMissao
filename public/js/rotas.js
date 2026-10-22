@@ -24,6 +24,7 @@ export const rotas = [
   { caminho: '/igrejas/nova', titulo: 'Nova igreja', pagina: pagina('igreja-form') },
   { caminho: '/igrejas/:id', titulo: 'Igreja', pagina: pagina('igreja-detalhe') },
   { caminho: '/igrejas/:id/editar', titulo: 'Editar igreja', pagina: pagina('igreja-form') },
+  { caminho: '/igrejas/:id/local', titulo: 'Ajustar no mapa', pagina: pagina('local-igreja') },
 
   {
     caminho: '/missionarios',
@@ -37,6 +38,7 @@ export const rotas = [
   { caminho: '/visitas/nova', titulo: 'Registrar visita', pagina: pagina('visita-form') },
   { caminho: '/visitas/:id', titulo: 'Visita', pagina: pagina('visita-detalhe') },
   { caminho: '/visitas/:id/editar', titulo: 'Editar visita', pagina: pagina('visita-form') },
+  { caminho: '/visitas/:id/local', titulo: 'Ajustar no mapa', pagina: pagina('local-visita') },
 
   { caminho: '/capacitacao', titulo: 'Capacitação', pagina: pagina('capacitacao') },
   { caminho: '/capacitacao/novo', titulo: 'Novo material', pagina: pagina('material-form') },

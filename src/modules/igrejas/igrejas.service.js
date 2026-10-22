@@ -22,7 +22,10 @@ export async function garantirExiste(id) {
   if (!(await repositorio.existe(id))) throw erros.requisicaoInvalida('A igreja selecionada não existe.');
 }
 
-export const listar = (filtros) => repositorio.listar(filtros);
+export async function listar(usuario, filtros) {
+  const igrejas = await repositorio.listar(filtros);
+  return igrejas.map((igreja) => comPermissoes(usuario, igreja));
+}
 
 export const listarOpcoes = () => repositorio.listarOpcoes();
 
@@ -41,10 +44,21 @@ export async function criar(usuario, dados) {
   return obter(usuario, id);
 }
 
-export async function atualizar(usuario, id, dados) {
+async function garantirPodeEditar(usuario, id) {
   const igreja = await buscarOuFalhar(id);
   if (!comPermissoes(usuario, igreja).pode_editar) throw erros.semPermissao('Você não pode editar esta igreja.');
+}
+
+export async function atualizar(usuario, id, dados) {
+  await garantirPodeEditar(usuario, id);
   await repositorio.atualizar(id, dados);
+  return obter(usuario, id);
+}
+
+/** Atalho para ajustar só o local no mapa, sem reenviar os demais dados da igreja. */
+export async function atualizarLocalizacao(usuario, id, dados) {
+  await garantirPodeEditar(usuario, id);
+  await repositorio.atualizarLocalizacao(id, dados);
   return obter(usuario, id);
 }
 

@@ -19,6 +19,11 @@ export default async function paginaVisita({ el, params, navegar, aoSair }) {
           <a class="btn btn-outline-primary btn-sm" href="${linkWaze(visita)}" target="_blank" rel="noopener">
             <i class="bi bi-car-front" aria-hidden="true"></i> Abrir no Waze
           </a>
+          ${visita.pode_editar
+            ? html`<a class="btn btn-light btn-sm ms-auto" href="#/visitas/${visita.id}/local">
+                <i class="bi bi-pin-map" aria-hidden="true"></i> Ajustar no mapa
+              </a>`
+            : ''}
         </div>
       </section>
 

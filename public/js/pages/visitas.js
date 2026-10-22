@@ -4,7 +4,10 @@ import { criarMapa, icone, temLocalizacao } from '../core/mapa.js';
 import { SITUACOES_VISITA } from '../core/rotulos.js';
 import { blocoErro, carregando, estadoVazio, html, render } from '../core/ui.js';
 
-const popupIgreja = (igreja) => html`<strong>${igreja.nome}</strong><br><a href="#/igrejas/${igreja.id}">Ver igreja</a>`.toString();
+const popupIgreja = (igreja) =>
+  html`<strong>${igreja.nome}</strong><br><a href="#/igrejas/${igreja.id}">Ver igreja</a>${igreja.pode_editar
+    ? html` · <a href="#/igrejas/${igreja.id}/local">Ajustar local</a>`
+    : ''}`.toString();
 
 function resumo(visitas) {
   const pessoas = visitas.reduce((soma, visita) => soma + (visita.pessoas_alcancadas ?? 0), 0);

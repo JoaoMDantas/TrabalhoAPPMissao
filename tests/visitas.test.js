@@ -105,4 +105,19 @@ describe('Mapa de visitas', () => {
     await api().delete(`/api/visitas/${criada.id}`).set(admin.auth).expect(204);
     await api().get(`/api/visitas/${criada.id}`).set(autor.auth).expect(404);
   });
+
+  test('atalho ajusta só o local da visita, que não pode ficar vazio', async () => {
+    const autor = await criarUsuario();
+    const outro = await criarUsuario();
+    const { body: criada } = await registrar(autor).expect(201);
+    const ajustar = (pessoa, dados) => api().patch(`/api/visitas/${criada.id}/localizacao`).set(pessoa.auth).send(dados);
+
+    const { body: ajustada } = await ajustar(autor, { latitude: '-2.5401', longitude: '-44.2101' }).expect(200);
+    assert.equal(ajustada.latitude, -2.5401);
+    assert.equal(ajustada.situacao, 'retornar', 'os outros dados continuam iguais');
+
+    await ajustar(outro, { latitude: -2.5, longitude: -44.2 }).expect(403);
+    const vazio = await ajustar(autor, { latitude: '', longitude: '' }).expect(400);
+    assert.equal(vazio.body.erro.mensagem, 'Marque o local no mapa.');
+  });
 });

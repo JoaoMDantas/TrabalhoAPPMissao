@@ -42,6 +42,13 @@ export async function atualizar(usuario, id, dados) {
   return obter(usuario, id);
 }
 
+/** Atalho para ajustar só o local da visita no mapa. */
+export async function atualizarLocalizacao(usuario, id, dados) {
+  await garantirPodeEditar(usuario, id);
+  await repositorio.atualizarLocalizacao(id, dados);
+  return obter(usuario, id);
+}
+
 export async function excluir(usuario, id) {
   await garantirPodeEditar(usuario, id);
   await repositorio.excluir(id);

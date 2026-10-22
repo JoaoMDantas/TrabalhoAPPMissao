@@ -50,6 +50,10 @@ export async function atualizar(id, dados) {
   ]);
 }
 
+export async function atualizarLocalizacao(id, { latitude, longitude }) {
+  await consultar('UPDATE visitas SET latitude = ?, longitude = ? WHERE id = ?', [latitude, longitude, id]);
+}
+
 export async function excluir(id) {
   await consultar('DELETE FROM visitas WHERE id = ?', [id]);
 }

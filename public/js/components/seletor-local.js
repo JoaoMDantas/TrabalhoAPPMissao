@@ -14,7 +14,15 @@ const ICONE_CARREGANDO = '<span class="spinner-border spinner-border-sm" aria-hi
  */
 export async function montarSeletorLocal(
   container,
-  { latitude = null, longitude = null, simbolo = 'geo-alt-fill', ajuda = 'Toque no mapa para marcar o local.', aoSair } = {},
+  {
+    latitude = null,
+    longitude = null,
+    simbolo = 'geo-alt-fill',
+    ajuda = 'Toque no mapa para marcar o local.',
+    classeMapa = 'mapa-seletor',
+    permiteRemover = true,
+    aoSair,
+  } = {},
 ) {
   render(
     container,
@@ -30,7 +38,7 @@ export async function montarSeletorLocal(
           aria-label="Usar minha localização"><i class="bi bi-crosshair" aria-hidden="true"></i></button>
       </div>
       <div class="list-group resultados-endereco mb-2" data-resultados hidden></div>
-      <div class="mapa mapa-seletor" data-mapa></div>
+      <div class="mapa ${classeMapa}" data-mapa></div>
       <div class="d-flex justify-content-between align-items-start gap-2 mt-1">
         <span class="form-text mt-0" data-ajuda>${ajuda}</span>
         <button type="button" class="btn btn-link btn-sm p-0" data-remover hidden>Remover marcação</button>
@@ -56,7 +64,7 @@ export async function montarSeletorLocal(
   function gravar({ lat, lng }) {
     campoLatitude.value = arredondar(lat);
     campoLongitude.value = arredondar(lng);
-    botaoRemover.hidden = false;
+    botaoRemover.hidden = !permiteRemover;
     textoAjuda.textContent = 'Local marcado. Se precisar, arraste o alfinete para ajustar.';
     container.querySelector('.mapa').classList.remove('mapa-invalido');
   }

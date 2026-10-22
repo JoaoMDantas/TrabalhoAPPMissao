@@ -18,12 +18,17 @@ function secaoMapa(igreja) {
           <a class="btn btn-outline-primary btn-sm" href="${linkWaze(igreja)}" target="_blank" rel="noopener">
             <i class="bi bi-car-front" aria-hidden="true"></i> Abrir no Waze
           </a>
+          ${igreja.pode_editar
+            ? html`<a class="btn btn-light btn-sm ms-auto" href="#/igrejas/${igreja.id}/local">
+                <i class="bi bi-pin-map" aria-hidden="true"></i> Ajustar no mapa
+              </a>`
+            : ''}
         </div>
       </section>`;
   }
   if (!igreja.pode_editar) return '';
   return html`
-    <a class="cartao cartao-dica mt-3" href="#/igrejas/${igreja.id}/editar">
+    <a class="cartao cartao-dica mt-3" href="#/igrejas/${igreja.id}/local">
       <i class="bi bi-geo-alt" aria-hidden="true"></i>
       <span class="small">Marque a localização da igreja no mapa para facilitar as visitas.</span>
     </a>`;

@@ -49,5 +49,6 @@ export const api = {
   get: (caminho, parametros) => requisitar('GET', caminho, { parametros }),
   post: (caminho, corpo = {}) => requisitar('POST', caminho, { corpo }),
   put: (caminho, corpo = {}) => requisitar('PUT', caminho, { corpo }),
+  patch: (caminho, corpo = {}) => requisitar('PATCH', caminho, { corpo }),
   del: (caminho) => requisitar('DELETE', caminho),
 };

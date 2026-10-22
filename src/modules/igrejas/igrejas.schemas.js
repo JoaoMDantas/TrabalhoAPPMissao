@@ -28,3 +28,6 @@ export const esquemaIgreja = z
     email: emailOpcional,
   })
   .refine(...coordenadasCompletas);
+
+/** Só a localização no mapa (as duas vazias removem a marcação). */
+export const esquemaLocalizacaoIgreja = z.object({ latitude, longitude }).refine(...coordenadasCompletas);

@@ -1,7 +1,7 @@
 import * as servico from './igrejas.service.js';
 
 export async function listar(req, res) {
-  res.json(await servico.listar(req.valido.query));
+  res.json(await servico.listar(req.usuario, req.valido.query));
 }
 
 export async function listarOpcoes(req, res) {
@@ -18,6 +18,10 @@ export async function criar(req, res) {
 
 export async function atualizar(req, res) {
   res.json(await servico.atualizar(req.usuario, req.valido.params.id, req.valido.body));
+}
+
+export async function atualizarLocalizacao(req, res) {
+  res.json(await servico.atualizarLocalizacao(req.usuario, req.valido.params.id, req.valido.body));
 }
 
 export async function excluir(req, res) {

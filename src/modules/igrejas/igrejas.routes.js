@@ -5,7 +5,7 @@ import { validar } from '../../core/middlewares/validar.js';
 import { PAPEIS } from '../../core/permissoes.js';
 import { paramsComId } from '../../core/validacao.js';
 import * as controller from './igrejas.controller.js';
-import { esquemaIgreja, filtrosIgrejas } from './igrejas.schemas.js';
+import { esquemaIgreja, esquemaLocalizacaoIgreja, filtrosIgrejas } from './igrejas.schemas.js';
 
 const rotas = Router();
 
@@ -18,6 +18,7 @@ rotas.get('/', validar({ query: filtrosIgrejas }), controller.listar);
 rotas.get('/:id', validar({ params: paramsComId }), controller.obter);
 rotas.post('/', autorizar(PAPEIS.LIDER, PAPEIS.ADMIN), validar({ body: esquemaIgreja }), controller.criar);
 rotas.put('/:id', validar({ params: paramsComId, body: esquemaIgreja }), controller.atualizar);
+rotas.patch('/:id/localizacao', validar({ params: paramsComId, body: esquemaLocalizacaoIgreja }), controller.atualizarLocalizacao);
 rotas.delete('/:id', validar({ params: paramsComId }), controller.excluir);
 
 export default rotas;

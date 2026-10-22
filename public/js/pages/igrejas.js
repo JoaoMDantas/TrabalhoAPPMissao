@@ -7,7 +7,9 @@ import { atrasar, blocoErro, carregando, estadoVazio, html, render } from '../co
 const conteudoPopup = (igreja) =>
   html`<strong>${igreja.nome}</strong><br>
     <span class="text-body-secondary">${igreja.bairro} · ${igreja.cidade}</span><br>
-    <a href="#/igrejas/${igreja.id}">Ver igreja</a>`.toString();
+    <a href="#/igrejas/${igreja.id}">Ver igreja</a>${igreja.pode_editar
+      ? html` · <a href="#/igrejas/${igreja.id}/local">Ajustar local</a>`
+      : ''}`.toString();
 
 export default async function paginaIgrejas({ el, query, aoSair }) {
   const podeCadastrar = sessao.usuario.papel !== 'missionario';
