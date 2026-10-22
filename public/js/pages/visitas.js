@@ -58,7 +58,7 @@ export default async function paginaVisitas({ el, query, aoSair }) {
   const areaMapa = el.querySelector('[data-area-mapa]');
   let visitas = [];
   let igrejas = [];
-  let mapaVisitas = null; // { L, mapa, camada }
+  let mapaPronto = null; // promessa de { L, mapa, camada }: o mapa é criado uma única vez
   let ultimaConsulta = 0;
 
   function atualizarEndereco() {
@@ -70,11 +70,14 @@ export default async function paginaVisitas({ el, query, aoSair }) {
   }
 
   async function desenharMapa() {
-    if (!mapaVisitas) {
-      const { L, mapa } = await criarMapa(el.querySelector('[data-mapa]'), { aoSair });
-      mapaVisitas = { L, mapa, camada: L.layerGroup().addTo(mapa) };
-    }
-    const { L, mapa, camada } = mapaVisitas;
+    // Guardar a promessa (e não o resultado) evita criar dois mapas se esta função for chamada de novo
+    // enquanto a biblioteca do mapa ainda está carregando.
+    mapaPronto ??= criarMapa(el.querySelector('[data-mapa]'), { aoSair }).then(({ L, mapa }) => ({
+      L,
+      mapa,
+      camada: L.layerGroup().addTo(mapa),
+    }));
+    const { L, mapa, camada } = await mapaPronto;
     mapa.invalidateSize();
     camada.clearLayers();
 
