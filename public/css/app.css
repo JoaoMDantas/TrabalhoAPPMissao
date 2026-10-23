@@ -1136,6 +1136,7 @@ a.cartao-dica:hover {
 
 .item-material-titulo {
   color: var(--pm-noite);
+  font-size: 1rem;
   font-weight: 600;
   overflow-wrap: anywhere;
   text-decoration: none;
@@ -1165,6 +1166,86 @@ a.cartao-dica:hover {
 .tipo-material-pdf { background: #fee2e2; color: #b91c1c; }
 .tipo-material-video { background: #ffedd5; color: #c2410c; }
 .tipo-material-link { background: #dbeafe; color: #1e40af; }
+
+/* --- Documentos da igreja --- */
+.item-documento-info {
+  margin: 0.35rem 0 0;
+  color: var(--pm-texto-suave);
+  font-size: 0.75rem;
+}
+
+.arquivo-pdf { background: #fee2e2; color: #b91c1c; }
+.arquivo-documento { background: #dbeafe; color: #1d4ed8; }
+.arquivo-planilha { background: #dcfce7; color: #15803d; }
+.arquivo-apresentacao { background: #ffedd5; color: #c2410c; }
+.arquivo-imagem { background: #ede9fe; color: #6d28d9; }
+
+.aviso-reservado {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--pm-texto-suave);
+}
+
+/* --- Visualizador de imagens em tela cheia --- */
+.visualizador {
+  position: fixed;
+  inset: 0;
+  z-index: 1095;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: calc(3.5rem + env(safe-area-inset-top)) 0.5rem calc(2.5rem + env(safe-area-inset-bottom));
+  background: rgba(5, 9, 25, 0.94);
+}
+
+.visualizador-imagem {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 6px;
+}
+
+.visualizador-botao {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+  font-size: 1.2rem;
+}
+
+.visualizador-botao:hover,
+.visualizador-botao:focus-visible {
+  background: rgba(255, 255, 255, 0.28);
+}
+
+.visualizador-fechar {
+  top: calc(0.75rem + env(safe-area-inset-top));
+  right: 0.75rem;
+}
+
+.visualizador-anterior {
+  left: 0.5rem;
+}
+
+.visualizador-proxima {
+  right: 0.5rem;
+}
+
+.visualizador-contador {
+  position: absolute;
+  bottom: calc(0.75rem + env(safe-area-inset-bottom));
+  left: 50%;
+  color: #dfe4f3;
+  font-size: 0.85rem;
+  transform: translateX(-50%);
+}
 
 /* --- Leitor de PDF --- */
 .leitor-cabecalho {

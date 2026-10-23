@@ -57,6 +57,8 @@ function itemMaterial(material, concluido) {
 
 export default async function paginaCapacitacao({ el }) {
   const podeAdicionar = sessao.usuario.papel !== 'missionario';
+  // Os documentos reservados ficam à parte da trilha pública, só para quem é de uma igreja.
+  const temIgreja = Boolean(sessao.usuario.igreja_id);
   let materiais = await api.get('/materiais');
   guardarTrilha(materiais);
   const concluidos = lerConcluidos();
@@ -82,6 +84,11 @@ export default async function paginaCapacitacao({ el }) {
             aria-valuemin="0" aria-valuemax="100">
             <div class="progress-bar"></div>
           </div>
+          ${temIgreja
+            ? html`<a class="btn btn-outline-primary btn-sm mt-3" href="#/documentos">
+                <i class="bi bi-folder2-open" aria-hidden="true"></i> Documentos da minha igreja
+              </a>`
+            : ''}
         </section>
 
         ${materiais.length

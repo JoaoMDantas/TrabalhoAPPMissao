@@ -4,6 +4,7 @@ import { itemPessoa } from '../components/pessoa.js';
 import { api } from '../core/api.js';
 import { agoraParaApi } from '../core/formatos.js';
 import { criarMapa, icone, linkComoChegar, linkWaze, temLocalizacao } from '../core/mapa.js';
+import { sessao } from '../core/sessao.js';
 import { avisar, confirmar, estadoVazio, html, render } from '../core/ui.js';
 
 function secaoMapa(igreja) {
@@ -41,6 +42,9 @@ export default async function paginaIgreja({ el, params, navegar, aoSair }) {
     api.get('/usuarios', { igreja_id: id }),
     api.get('/eventos', { igreja_id: id, de: agoraParaApi(), limite: 5 }),
   ]);
+  // Documentos reservados: só membros da igreja (e o admin) veem o atalho.
+  const ehMembro = sessao.usuario.igreja_id === igreja.id;
+  const podeVerDocumentos = ehMembro || sessao.usuario.papel === 'admin';
 
   render(
     el,
@@ -54,6 +58,13 @@ export default async function paginaIgreja({ el, params, navegar, aoSair }) {
       </section>
 
       ${secaoMapa(igreja)}
+
+      ${podeVerDocumentos
+        ? html`<a class="cartao cartao-dica mt-3" href="#/documentos${ehMembro ? '' : `?igreja=${igreja.id}`}">
+            <i class="bi bi-folder2-open" aria-hidden="true"></i>
+            <span class="small"><strong>Documentos da igreja</strong><br>Arquivos que a liderança compartilha só com os membros.</span>
+          </a>`
+        : ''}
 
       ${igreja.pode_editar || igreja.pode_excluir
         ? html`<div class="d-flex gap-2 mt-3">

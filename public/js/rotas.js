@@ -44,6 +44,10 @@ export const rotas = [
   { caminho: '/capacitacao/novo', titulo: 'Novo material', pagina: pagina('material-form') },
   { caminho: '/capacitacao/:id/ler', titulo: 'Leitura', pagina: pagina('material-leitor') },
 
+  { caminho: '/documentos', titulo: 'Documentos da igreja', pagina: pagina('documentos') },
+  { caminho: '/documentos/novo', titulo: 'Novo documento', pagina: pagina('documento-form') },
+  { caminho: '/documentos/:id/ler', titulo: 'Leitura', pagina: pagina('documento-leitor') },
+
   { caminho: '/perfil', titulo: 'Meu perfil', pagina: pagina('perfil') },
 ];
 
