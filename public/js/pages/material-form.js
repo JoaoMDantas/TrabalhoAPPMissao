@@ -11,6 +11,7 @@ import {
   mostrarErroFormulario,
   render,
 } from '../core/ui.js';
+import { dadosYoutube, miniaturaYoutube } from '../core/youtube.js';
 
 export default async function paginaNovoMaterial({ el, navegar }) {
   if (sessao.usuario.papel === 'missionario') {
@@ -41,7 +42,8 @@ export default async function paginaNovoMaterial({ el, navegar }) {
           <label class="form-label" for="url">Link</label>
           <input class="form-control" id="url" name="url" type="url" inputmode="url" maxlength="500"
             placeholder="https://www.youtube.com/watch?v=...">
-          <div class="form-text">Cole o endereço do vídeo, PDF ou site.</div>
+          <div class="form-text">Cole o endereço do vídeo, PDF ou site. Vídeos do YouTube tocam dentro do app.</div>
+          <div class="previa-link" data-previa-link hidden></div>
         </div>
         <div class="mb-3">
           <label class="form-label" for="etapa">Etapa da trilha</label>
@@ -58,6 +60,28 @@ export default async function paginaNovoMaterial({ el, navegar }) {
   );
 
   const form = el.querySelector('form');
+
+  // Ao colar o link, o tipo é escolhido sozinho (YouTube → vídeo; arquivo .pdf ou Google Drive → PDF).
+  const campoLink = form.elements.namedItem('url');
+  const previa = el.querySelector('[data-previa-link]');
+  campoLink.addEventListener('input', () => {
+    const endereco = campoLink.value.trim();
+    const youtube = dadosYoutube(endereco);
+    if (youtube) form.elements.namedItem('tipo').value = 'video';
+    else if (/\.pdf($|[?#])/i.test(endereco) || /^https:\/\/drive\.google\.com\/file\//.test(endereco)) {
+      form.elements.namedItem('tipo').value = 'pdf';
+    }
+    previa.hidden = !youtube;
+    render(
+      previa,
+      youtube?.video
+        ? html`<img src="${miniaturaYoutube(youtube.video)}" alt=""><span>Vídeo do YouTube: vai tocar dentro do app.</span>`
+        : youtube
+          ? html`<span>Playlist do YouTube: vai tocar dentro do app.</span>`
+          : '',
+    );
+  });
+
   form.addEventListener('submit', async (evento) => {
     evento.preventDefault();
     limparErrosFormulario(form);

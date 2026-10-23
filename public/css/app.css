@@ -1287,6 +1287,65 @@ a.cartao-dica:hover {
   text-decoration: none;
 }
 
+/* Miniatura de vídeo do YouTube no lugar do ícone do material. */
+.miniatura-material {
+  position: relative;
+  flex: 0 0 80px;
+  width: 80px;
+  height: 45px;
+  overflow: hidden;
+  border-radius: 10px;
+  background: #000;
+}
+
+.miniatura-material img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.miniatura-material .bi {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--pm-primaria);
+  color: #fff;
+  font-size: 1rem;
+  transform: translate(-50%, -50%);
+}
+
+.cartao-video {
+  overflow: hidden;
+  padding: 0;
+}
+
+.video-grande {
+  margin-top: 0;
+  border-radius: 0;
+}
+
+.previa-link {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 0.5rem;
+  color: var(--pm-texto-suave);
+  font-size: 0.85rem;
+}
+
+.previa-link img {
+  width: 96px;
+  height: 54px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
 .acoes-material {
   display: flex;
   flex-wrap: wrap;

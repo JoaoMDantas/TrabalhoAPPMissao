@@ -4,6 +4,7 @@ import { guardarTrilha, lerConcluidos, salvarConcluidos } from '../core/progress
 import { TIPOS_MATERIAL } from '../core/rotulos.js';
 import { sessao } from '../core/sessao.js';
 import { alternarEnvio, avisar, confirmar, estadoVazio, html, render } from '../core/ui.js';
+import { dadosYoutube, miniaturaYoutube } from '../core/youtube.js';
 
 function agruparPorEtapa(materiais) {
   const grupos = new Map();
@@ -14,18 +15,38 @@ function agruparPorEtapa(materiais) {
   return grupos;
 }
 
-// PDFs abrem no leitor do próprio app; vídeos e sites abrem em uma nova aba.
+// Vídeos do YouTube tocam no próprio app, mesmo que tenham sido cadastrados como "Site".
+const videoDoYoutube = (material) => (material.tipo === 'pdf' ? null : dadosYoutube(material.url));
+
+// PDFs abrem no leitor do app e vídeos do YouTube no player do app; os demais links abrem em uma nova aba.
 function linkPrincipal(material) {
-  return material.tipo === 'pdf'
-    ? html`href="#/capacitacao/${material.id}/ler"`
-    : html`href="${material.url}" target="_blank" rel="noopener"`;
+  if (material.tipo === 'pdf') return html`href="#/capacitacao/${material.id}/ler"`;
+  if (videoDoYoutube(material)) return html`href="#/capacitacao/${material.id}/assistir"`;
+  return html`href="${material.url}" target="_blank" rel="noopener"`;
+}
+
+function acaoPrincipal(material) {
+  if (videoDoYoutube(material)) return { acao: 'Assistir no app', iconeAcao: 'play-fill' };
+  return TIPOS_MATERIAL[material.tipo] ?? TIPOS_MATERIAL.link;
+}
+
+function capaMaterial(material) {
+  const video = videoDoYoutube(material)?.video;
+  if (video) {
+    return html`<span class="miniatura-material">
+      <img src="${miniaturaYoutube(video)}" alt="" loading="lazy" decoding="async">
+      <i class="bi bi-play-fill" aria-hidden="true"></i>
+    </span>`;
+  }
+  const tipo = TIPOS_MATERIAL[material.tipo] ?? TIPOS_MATERIAL.link;
+  return html`<span class="icone-quadrado tipo-material-${material.tipo}"><i class="bi bi-${tipo.icone}" aria-hidden="true"></i></span>`;
 }
 
 function itemMaterial(material, concluido) {
-  const tipo = TIPOS_MATERIAL[material.tipo] ?? TIPOS_MATERIAL.link;
+  const tipo = acaoPrincipal(material);
   return html`
     <article class="item-material ${concluido ? 'concluido' : ''}">
-      <span class="icone-quadrado tipo-material-${material.tipo}"><i class="bi bi-${tipo.icone}" aria-hidden="true"></i></span>
+      ${capaMaterial(material)}
       <div class="flex-grow-1 min-w-0">
         <div class="d-flex align-items-start gap-2">
           <a class="item-material-titulo flex-grow-1" ${linkPrincipal(material)}>${material.titulo}</a>
