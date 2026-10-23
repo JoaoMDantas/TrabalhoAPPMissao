@@ -5,7 +5,7 @@ import { erros } from '../erros.js';
  * Recebe arquivos de um formulário (multipart/form-data) na memória, com limite de tamanho e de quantidade.
  * Os arquivos ficam em req.files e os demais campos em req.body. Requisições sem arquivo (JSON) passam direto.
  */
-export function receberArquivos(campo, { limiteMb, maximo = 1 }) {
+export function receberArquivos(campo, { limiteMb, maximo = 1, item = 'arquivo' }) {
   const receber = multer({
     storage: multer.memoryStorage(),
     // Nomes como "Calendário.pdf" chegam em UTF-8.
@@ -16,9 +16,9 @@ export function receberArquivos(campo, { limiteMb, maximo = 1 }) {
   return (req, res, next) =>
     receber(req, res, (erro) => {
       if (!erro) return next();
-      if (erro.code === 'LIMIT_FILE_SIZE') return next(erros.arquivoGrande(`Cada arquivo pode ter no máximo ${limiteMb} MB.`));
+      if (erro.code === 'LIMIT_FILE_SIZE') return next(erros.arquivoGrande(`Cada ${item} pode ter no máximo ${limiteMb} MB.`));
       if (erro.code === 'LIMIT_FILE_COUNT' || erro.code === 'LIMIT_UNEXPECTED_FILE') {
-        return next(erros.requisicaoInvalida(maximo === 1 ? 'Envie um arquivo por vez.' : `Envie no máximo ${maximo} arquivos.`));
+        return next(erros.requisicaoInvalida(maximo === 1 ? `Envie um ${item} por vez.` : `Envie no máximo ${maximo} ${item}s.`));
       }
       return next(erro);
     });

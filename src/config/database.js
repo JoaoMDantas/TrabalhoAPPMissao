@@ -23,6 +23,26 @@ pool.on('connection', (conexao) => {
   });
 });
 
+/**
+ * Executa várias instruções numa transação: ou todas valem, ou nenhuma (ex.: uma mensagem e suas fotos).
+ * "trabalho(executar)" recebe uma função com a mesma forma de consultar(sql, parametros).
+ */
+export async function transacao(trabalho) {
+  const conexao = await pool.getConnection();
+  try {
+    await conexao.beginTransaction();
+    const executar = async (sql, parametros = []) => (await conexao.query(sql, parametros))[0];
+    const resultado = await trabalho(executar);
+    await conexao.commit();
+    return resultado;
+  } catch (erro) {
+    await conexao.rollback();
+    throw erro;
+  } finally {
+    conexao.release();
+  }
+}
+
 /** Executa SQL parametrizado. Retorna as linhas (SELECT) ou o resultado (INSERT/UPDATE/DELETE). */
 export async function consultar(sql, parametros = []) {
   const [resultado] = await pool.query(sql, parametros);

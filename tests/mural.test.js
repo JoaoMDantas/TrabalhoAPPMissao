@@ -8,6 +8,17 @@ after(encerrarBanco);
 
 const publicar = (pessoa, dados) => api().post('/api/mural').set(pessoa.auth).send(dados);
 
+// Imagens mínimas: só o começo de um JPEG e de um PNG, o suficiente para identificar o tipo.
+const JPEG = Buffer.concat([Buffer.from([0xff, 0xd8, 0xff, 0xe0]), Buffer.alloc(120, 7)]);
+const PNG = Buffer.concat([Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]), Buffer.alloc(120, 3)]);
+
+// Lê o corpo binário da resposta como Buffer.
+const comoBuffer = (resposta, pronto) => {
+  const pedacos = [];
+  resposta.on('data', (pedaco) => pedacos.push(pedaco));
+  resposta.on('end', () => pronto(null, Buffer.concat(pedacos)));
+};
+
 describe('Mural', () => {
   test('missionário publica mensagem e pode excluí-la', async () => {
     const missionario = await criarUsuario();
@@ -83,6 +94,63 @@ describe('Mural', () => {
       pagina2.body.map((m) => m.conteudo),
       ['de dez dias atrás'],
     );
+  });
+
+  test('publica fotos com a mensagem e entrega cada foto por link assinado', async () => {
+    const missionario = await criarUsuario();
+    const { body: criada } = await api()
+      .post('/api/mural')
+      .set(missionario.auth)
+      .field('conteudo', 'Fotos do mutirão de visitas')
+      .attach('fotos', JPEG, 'foto1.jpg')
+      .attach('fotos', PNG, 'foto2.png')
+      .expect(201);
+
+    assert.equal(criada.fotos.length, 2);
+    assert.match(criada.fotos[0].url, /^\/api\/mural\/fotos\/\d+\?expira=\d+&assinatura=[\w-]+$/);
+
+    // A foto abre sem o login no cabeçalho (como em <img>), desde que o link seja o assinado.
+    const foto = await api().get(criada.fotos[0].url).buffer(true).parse(comoBuffer).expect(200);
+    assert.equal(foto.headers['content-type'], 'image/jpeg');
+    assert.ok(foto.body.equals(JPEG));
+    assert.equal((await api().get(criada.fotos[1].url).expect(200)).headers['content-type'], 'image/png');
+
+    const adulterado = criada.fotos[0].url.replace(/assinatura=[\w-]+/, 'assinatura=assinaturafalsa123');
+    await api().get(adulterado).expect(403);
+    const outraFoto = criada.fotos[0].url.replace(/fotos\/\d+/, `fotos/${criada.fotos[1].id}`);
+    await api().get(outraFoto).expect(403);
+    await api().get(`/api/mural/fotos/${criada.fotos[0].id}`).expect(400);
+
+    const { body: lista } = await api().get('/api/mural').set(missionario.auth).expect(200);
+    assert.equal(lista.find((m) => m.id === criada.id).fotos.length, 2);
+
+    // Excluir a mensagem apaga as fotos.
+    await api().delete(`/api/mural/${criada.id}`).set(missionario.auth).expect(204);
+    await api().get(criada.fotos[0].url).expect(404);
+  });
+
+  test('aceita mensagem só com foto; recusa sem texto e sem foto, arquivo que não é imagem e mais de 4 fotos', async () => {
+    const missionario = await criarUsuario();
+
+    const { body: soFoto } = await api().post('/api/mural').set(missionario.auth).attach('fotos', JPEG, 'a.jpg').expect(201);
+    assert.equal(soFoto.conteudo, '');
+    assert.equal(soFoto.fotos.length, 1);
+
+    const vazia = await api().post('/api/mural').set(missionario.auth).field('conteudo', '   ').expect(400);
+    assert.equal(vazia.body.erro.mensagem, 'Escreva uma mensagem ou adicione uma foto.');
+
+    const naoImagem = await api()
+      .post('/api/mural')
+      .set(missionario.auth)
+      .field('conteudo', 'teste')
+      .attach('fotos', Buffer.from('<svg onload="alert(1)"></svg>'), 'foto.jpg')
+      .expect(400);
+    assert.equal(naoImagem.body.erro.mensagem, 'As fotos precisam ser imagens JPG, PNG ou WebP.');
+
+    const requisicao = api().post('/api/mural').set(missionario.auth).field('conteudo', 'muitas');
+    for (let i = 0; i < 5; i += 1) requisicao.attach('fotos', JPEG, `f${i}.jpg`);
+    const muitas = await requisicao.expect(400);
+    assert.equal(muitas.body.erro.mensagem, 'Envie no máximo 4 fotos.');
   });
 
   test('outra pessoa não exclui mensagem alheia', async () => {

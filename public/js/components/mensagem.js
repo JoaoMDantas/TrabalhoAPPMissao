@@ -1,6 +1,7 @@
 import { tempoRelativo } from '../core/formatos.js';
 import { PAPEIS } from '../core/rotulos.js';
 import { avatar, html } from '../core/ui.js';
+import { fotosDaMensagem, textoComLinks, videoDoTexto } from './midia.js';
 
 export function itemMensagem(mensagem, { permitirExcluir = true } = {}) {
   const ehAviso = mensagem.tipo === 'aviso';
@@ -22,7 +23,9 @@ export function itemMensagem(mensagem, { permitirExcluir = true } = {}) {
             </button>`
           : ''}
       </header>
-      <p class="conteudo-mensagem">${mensagem.conteudo}</p>
+      ${mensagem.conteudo ? html`<p class="conteudo-mensagem">${textoComLinks(mensagem.conteudo)}</p>` : ''}
+      ${mensagem.conteudo ? videoDoTexto(mensagem.conteudo) : ''}
+      ${mensagem.fotos?.length ? fotosDaMensagem(mensagem.fotos) : ''}
       ${mensagem.igreja_id
         ? html`<a href="#/igrejas/${mensagem.igreja_id}" class="etiqueta-igreja">
             <i class="bi bi-building" aria-hidden="true"></i> ${mensagem.igreja_nome}

@@ -40,8 +40,10 @@ export function criarApp() {
         directives: {
           // Mantém o app acessível por http no celular (ex.: http://192.168.0.10:3000) durante os testes na rede local.
           upgradeInsecureRequests: null,
-          // Imagens do mapa (OpenStreetMap) e imagens abertas no próprio app (blob:, ex.: documentos da igreja).
-          imgSrc: ["'self'", 'data:', 'blob:', 'https://tile.openstreetmap.org'],
+          // Imagens do mapa (OpenStreetMap), miniaturas do YouTube e imagens abertas no próprio app (blob:).
+          imgSrc: ["'self'", 'data:', 'blob:', 'https://tile.openstreetmap.org', 'https://i.ytimg.com'],
+          // Player do YouTube em modo de privacidade reforçada, para vídeos no mural e na capacitação.
+          frameSrc: ["'self'", 'https://www.youtube-nocookie.com'],
         },
       },
     }),

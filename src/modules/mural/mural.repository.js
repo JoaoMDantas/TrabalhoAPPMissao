@@ -40,14 +40,37 @@ export async function buscarPorId(id) {
   return consultarUm(`${SELECT_MENSAGEM} WHERE m.id = ?`, [id]);
 }
 
-export async function criar(dados, autorId) {
-  const resultado = await consultar('INSERT INTO mensagens (conteudo, tipo, autor_id, igreja_id) VALUES (?, ?, ?, ?)', [
-    dados.conteudo,
+// "executar" permite rodar dentro de uma transação (ver transacao() em config/database.js).
+export async function criar(dados, autorId, executar = consultar) {
+  const resultado = await executar('INSERT INTO mensagens (conteudo, tipo, autor_id, igreja_id) VALUES (?, ?, ?, ?)', [
+    dados.conteudo ?? '',
     dados.tipo,
     autorId,
     dados.igreja_id,
   ]);
   return resultado.insertId;
+}
+
+export async function adicionarFoto(mensagemId, ordem, foto, executar = consultar) {
+  await executar('INSERT INTO mensagens_fotos (mensagem_id, ordem, tipo_mime, tamanho, conteudo) VALUES (?, ?, ?, ?, ?)', [
+    mensagemId,
+    ordem,
+    foto.tipo_mime,
+    foto.conteudo.length,
+    foto.conteudo,
+  ]);
+}
+
+/** Fotos (só os ids, sem o conteúdo) das mensagens informadas, na ordem em que foram enviadas. */
+export async function listarFotos(idsMensagens) {
+  if (!idsMensagens.length) return [];
+  return consultar('SELECT id, mensagem_id FROM mensagens_fotos WHERE mensagem_id IN (?) ORDER BY mensagem_id, ordem, id', [
+    idsMensagens,
+  ]);
+}
+
+export async function buscarFoto(id) {
+  return consultarUm('SELECT id, tipo_mime, conteudo FROM mensagens_fotos WHERE id = ?', [id]);
 }
 
 export async function excluir(id) {
