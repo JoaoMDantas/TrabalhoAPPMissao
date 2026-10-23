@@ -36,6 +36,8 @@ export async function criarMapa(elemento, { centro = CENTRO_SAO_LUIS, zoom = 12,
   aoSair?.(() => setTimeout(() => mapa.remove(), 300));
   L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
+    // O OpenStreetMap bloqueia (403) quem não informa de qual site vem o mapa; o app, por padrão, não informa (no-referrer).
+    referrerPolicy: 'strict-origin-when-cross-origin',
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>',
   }).addTo(mapa);
   return { L, mapa };
