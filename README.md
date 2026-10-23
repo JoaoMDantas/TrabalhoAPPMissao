@@ -10,13 +10,14 @@ Funciona direto no navegador e pode ser instalado na tela inicial do celular, co
 ## Funcionalidades
 
 - **Agenda de atividades:** cultos, visitas, ações sociais e reuniões organizados por mês, com compartilhamento pelo WhatsApp.
-- **Mural:** mensagens, pedidos de oração e avisos para a comunidade.
+- **Mural:** mensagens, pedidos de oração e avisos para a comunidade, com fotos, links e vídeos do YouTube.
 - **Igrejas e missionários:** cadastro, busca, contato direto por telefone ou WhatsApp e localização das igrejas no
   mapa, com rota até lá.
 - **Mapa de visitas:** registro das casas e ruas visitadas (evangelismo, acompanhamento, oração), com a situação de
   cada visita e sem dados pessoais dos moradores.
 - **Capacitação:** trilha de estudos em missões e evangelismo, com vídeos, revistas e roteiros; os PDFs abrem no
-  próprio app e ficam disponíveis sem internet.
+  próprio app e ficam disponíveis sem internet, e os vídeos do YouTube tocam dentro dele.
+- **Documentos da igreja:** espaço reservado em que a liderança compartilha arquivos só com os membros.
 - **Perfis:** contas para missionários, líderes de igreja e administradores, cada um com suas permissões.
 - **Privacidade:** aviso de privacidade e consentimento no cadastro.
 
