@@ -3,7 +3,8 @@
 Aplicativo que conecta igrejas e missionários, facilitando a comunicação, a organização das atividades e a
 capacitação de quem atua em missões.
 
-Funciona direto no navegador e pode ser instalado na tela inicial do celular, como um aplicativo.
+Funciona direto no navegador e pode ser instalado na tela inicial do celular, como um aplicativo. O próprio app mostra o
+passo a passo para iPhone e Android.
 
 **Acesse:** https://trabalhoappmissao-production.up.railway.app
 
