@@ -9,8 +9,8 @@ Funciona direto no navegador e pode ser instalado na tela inicial do celular, co
 
 ## Funcionalidades
 
-- **Agenda de atividades:** cultos, visitas, ações sociais e reuniões organizados por mês, com curtidas, comentários e
-  compartilhamento pelo WhatsApp.
+- **Agenda de atividades:** cultos, visitas, ações sociais e reuniões organizados por mês, com confirmação de presença
+  (e a lista de quem vai), curtidas, comentários e compartilhamento pelo WhatsApp.
 - **Mural:** mensagens, pedidos de oração e avisos para a comunidade, com fotos, links, vídeos do YouTube, curtidas e
   comentários.
 - **Igrejas e missionários:** cadastro, busca, contato direto por telefone ou WhatsApp e localização das igrejas no

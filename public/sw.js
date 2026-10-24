@@ -1,5 +1,5 @@
 // Ao mudar arquivos essenciais, aumente a versão para que os aparelhos descartem o cache antigo.
-const CACHE = 'projeto-missionario-v8';
+const CACHE = 'projeto-missionario-v9';
 // PDFs da trilha de capacitação ficam num cache à parte, mantido entre versões do app, para ler sem internet.
 const CACHE_ARQUIVOS = 'projeto-missionario-arquivos';
 const ARQUIVO_DE_MATERIAL = /^\/api\/materiais\/\d+\/arquivo$/;
