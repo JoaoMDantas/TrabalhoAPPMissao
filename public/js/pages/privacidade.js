@@ -12,12 +12,12 @@ export default function paginaPrivacidade({ el }) {
           <h2>Quais dados coletamos</h2>
           <p>
             Nome, e-mail, telefone (opcional), igreja, bairro de atuação e o que você publica na agenda, no mural (inclusive
-            fotos) e no mapa de visitas.
+            fotos), nos comentários e no mapa de visitas, além das suas curtidas.
           </p>
           <h2>Para que usamos</h2>
           <p>
-            Apenas para a comunicação entre igrejas e missionários dentro do aplicativo. Seus contatos ficam visíveis somente
-            para pessoas cadastradas.
+            Apenas para a comunicação entre igrejas e missionários dentro do aplicativo. Seus contatos, comentários e curtidas
+            (com o seu nome) ficam visíveis somente para pessoas cadastradas.
           </p>
           <h2>Mapa de visitas e localização</h2>
           <p>

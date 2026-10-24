@@ -9,8 +9,10 @@ Funciona direto no navegador e pode ser instalado na tela inicial do celular, co
 
 ## Funcionalidades
 
-- **Agenda de atividades:** cultos, visitas, ações sociais e reuniões organizados por mês, com compartilhamento pelo WhatsApp.
-- **Mural:** mensagens, pedidos de oração e avisos para a comunidade, com fotos, links e vídeos do YouTube.
+- **Agenda de atividades:** cultos, visitas, ações sociais e reuniões organizados por mês, com curtidas, comentários e
+  compartilhamento pelo WhatsApp.
+- **Mural:** mensagens, pedidos de oração e avisos para a comunidade, com fotos, links, vídeos do YouTube, curtidas e
+  comentários.
 - **Igrejas e missionários:** cadastro, busca, contato direto por telefone ou WhatsApp e localização das igrejas no
   mapa, com rota até lá.
 - **Mapa de visitas:** registro das casas e ruas visitadas (evangelismo, acompanhamento, oração), com a situação de
