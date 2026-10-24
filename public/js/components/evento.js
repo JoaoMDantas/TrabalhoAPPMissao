@@ -1,6 +1,7 @@
 import { hora, mesCurto, paraData, rotuloDia } from '../core/formatos.js';
 import { TIPOS_EVENTO } from '../core/rotulos.js';
 import { html } from '../core/ui.js';
+import { totaisInteracoes } from './interacoes.js';
 
 export const seloTipoEvento = (tipo) => {
   const { rotulo, icone } = TIPOS_EVENTO[tipo] ?? TIPOS_EVENTO.outro;
@@ -32,6 +33,7 @@ export function itemEvento(evento, { agrupadoPorDia = false } = {}) {
         <h3 class="item-evento-titulo">${evento.titulo}</h3>
         <p class="item-evento-meta">${detalhes.map((detalhe, i) => html`${i ? ' · ' : ''}${detalhe}`)}</p>
       </div>
+      ${totaisInteracoes(evento)}
       <i class="bi bi-chevron-right seta" aria-hidden="true"></i>
     </a>`;
 }

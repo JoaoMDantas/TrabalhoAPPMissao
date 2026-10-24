@@ -49,6 +49,7 @@
   --pm-borda: #e2e7f2;
   --pm-texto: #121a33;
   --pm-texto-suave: #5f6b88;
+  --pm-curtida: #e11d48;
   --pm-sombra: 0 10px 26px rgba(16, 25, 54, 0.08);
   --pm-sombra-forte: 0 14px 32px rgba(16, 25, 54, 0.14);
   --pm-fonte: 'Poppins', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
@@ -1216,6 +1217,240 @@ a.cartao-dica:hover {
 .video-capa:hover .video-play,
 .video-capa:focus-visible .video-play {
   background: var(--pm-primaria-escura);
+}
+
+/* --- Curtidas e comentários (mural e agenda) --- */
+.interacoes {
+  margin-top: 0.75rem;
+  border-top: 1px solid var(--pm-borda);
+}
+
+/* Num cartão só para a conversa (página do evento), a barra abre o cartão sem a linha de cima. */
+.cartao > .interacoes:first-child {
+  margin-top: -0.35rem;
+  border-top: 0;
+}
+
+.item-mensagem.aviso .interacoes {
+  border-top-color: #fed7aa;
+}
+
+.barra-interacoes {
+  display: flex;
+  gap: 0.25rem;
+  padding-top: 0.35rem;
+}
+
+.botao-interacao {
+  display: inline-flex;
+  flex: 1 1 0;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  min-height: 42px;
+  padding: 0.35rem 0.5rem;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--pm-texto-suave);
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: background-color 0.15s, color 0.15s;
+}
+
+.botao-interacao .bi {
+  font-size: 1.1rem;
+}
+
+.botao-interacao .contagem {
+  color: var(--pm-texto);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.botao-interacao .contagem:empty {
+  display: none;
+}
+
+@media (hover: hover) {
+  .botao-interacao:hover {
+    background: var(--pm-fundo);
+    color: var(--pm-texto);
+  }
+}
+
+.botao-interacao:focus-visible {
+  outline: 2px solid var(--pm-primaria);
+  outline-offset: 1px;
+}
+
+.botao-interacao[aria-pressed='true'],
+.botao-interacao[aria-pressed='true'] .contagem {
+  color: var(--pm-curtida);
+}
+
+.botao-interacao[aria-expanded='true'] {
+  color: var(--pm-texto);
+}
+
+.botao-interacao .bi.animar {
+  animation: pulsar-curtida 0.35s ease-out;
+}
+
+@keyframes pulsar-curtida {
+  50% {
+    transform: scale(1.35);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .botao-interacao .bi.animar {
+    animation: none;
+  }
+}
+
+.painel-comentarios {
+  padding-top: 0.5rem;
+}
+
+.quem-curtiu {
+  margin: 0 0 0.6rem;
+  color: var(--pm-texto-suave);
+  font-size: 0.8rem;
+}
+
+.quem-curtiu:empty {
+  display: none;
+}
+
+.quem-curtiu .bi {
+  margin-right: 0.2rem;
+  color: var(--pm-curtida);
+}
+
+/* Botão com aparência de link, para ações dentro do texto. */
+.botao-texto {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--bs-link-color);
+  font: inherit;
+  font-weight: 600;
+}
+
+.botao-texto:hover {
+  text-decoration: underline;
+}
+
+.sem-comentarios {
+  margin: 0;
+  color: var(--pm-texto-suave);
+  font-size: 0.85rem;
+}
+
+.lista-comentarios {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lista-comentarios:empty {
+  display: none;
+}
+
+.comentario {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.comentario-corpo {
+  flex: 1;
+  min-width: 0;
+}
+
+.comentario-balao {
+  display: inline-block;
+  max-width: 100%;
+  padding: 0.4rem 0.8rem 0.5rem;
+  border-radius: 4px 16px 16px;
+  background: var(--pm-fundo);
+}
+
+.item-mensagem.aviso .comentario-balao {
+  background: var(--pm-superficie);
+}
+
+.comentario-autor {
+  color: var(--pm-texto);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.comentario-texto {
+  margin: 0.05rem 0 0;
+  font-size: 0.9rem;
+  overflow-wrap: anywhere;
+  white-space: pre-line;
+}
+
+.comentario-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding: 0.15rem 0.8rem 0;
+  color: var(--pm-texto-suave);
+  font-size: 0.72rem;
+}
+
+.comentario-meta .botao-texto {
+  color: var(--pm-texto-suave);
+  font-weight: 500;
+}
+
+.form-comentario {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.form-comentario textarea {
+  max-height: 8rem;
+  padding: 0.5rem 0.9rem;
+  border-radius: 20px;
+  line-height: 1.4;
+  resize: none;
+}
+
+.btn-enviar-comentario {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: 50%;
+}
+
+/* Totais no cartão do evento, na agenda */
+.totais-interacoes {
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.1rem;
+  color: var(--pm-texto-suave);
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.totais-interacoes .bi {
+  margin-right: 0.15rem;
 }
 
 /* --- Detalhes --- */

@@ -1,6 +1,7 @@
 import { tempoRelativo } from '../core/formatos.js';
 import { PAPEIS } from '../core/rotulos.js';
 import { avatar, html } from '../core/ui.js';
+import { barraInteracoes } from './interacoes.js';
 import { fotosDaMensagem, textoComLinks, videoDoTexto } from './midia.js';
 
 export function itemMensagem(mensagem, { permitirExcluir = true } = {}) {
@@ -31,5 +32,6 @@ export function itemMensagem(mensagem, { permitirExcluir = true } = {}) {
             <i class="bi bi-building" aria-hidden="true"></i> ${mensagem.igreja_nome}
           </a>`
         : ''}
+      ${barraInteracoes('mural', mensagem)}
     </article>`;
 }

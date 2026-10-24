@@ -35,6 +35,11 @@ export function render(elemento, conteudo) {
   elemento.innerHTML = paraHtml(conteudo);
 }
 
+/** Acrescenta conteúdo sem redesenhar o que já está na tela ("afterbegin" coloca no início). */
+export function acrescentar(elemento, conteudo, posicao = 'beforeend') {
+  elemento.insertAdjacentHTML(posicao, paraHtml(conteudo));
+}
+
 export const carregando = () => html`
   <div class="carregando" role="status">
     <div class="spinner-border text-primary" aria-hidden="true"></div>

@@ -4,6 +4,7 @@ import { enviarFormulario } from '../core/arquivos.js';
 import { reduzirFoto } from '../core/imagens.js';
 import { sessao } from '../core/sessao.js';
 import {
+  acrescentar,
   alternarEnvio,
   avisar,
   blocoErro,
@@ -95,8 +96,15 @@ export default async function paginaMural({ el, aoSair }) {
       limite: POR_PAGINA,
       antes_de: continuar ? mensagens.at(-1)?.id : undefined,
     });
-    mensagens = continuar ? [...mensagens, ...pagina] : pagina;
     botaoMais.hidden = pagina.length < POR_PAGINA;
+    // "Carregar mais" só acrescenta as novas: as que já estão na tela continuam como estão
+    // (comentários abertos, vídeo tocando).
+    if (continuar && mensagens.length) {
+      mensagens = [...mensagens, ...pagina];
+      acrescentar(lista, pagina.map((mensagem) => itemMensagem(mensagem)));
+      return;
+    }
+    mensagens = pagina;
     desenhar();
   }
 
@@ -181,7 +189,8 @@ export default async function paginaMural({ el, aoSair }) {
       el.querySelector('[data-contador]').textContent = `0/${LIMITE_CARACTERES}`;
       if (!filtroTipo || filtroTipo === nova.tipo) {
         mensagens = [nova, ...mensagens];
-        desenhar();
+        if (mensagens.length === 1) desenhar();
+        else acrescentar(lista, itemMensagem(nova), 'afterbegin');
       }
       avisar('Mensagem publicada!');
     } catch (erro) {
@@ -217,7 +226,8 @@ export default async function paginaMural({ el, aoSair }) {
       const id = Number(botao.dataset.excluir);
       await api.del(`/mural/${id}`);
       mensagens = mensagens.filter((mensagem) => mensagem.id !== id);
-      desenhar();
+      if (mensagens.length) botao.closest('[data-mensagem]').remove();
+      else desenhar();
       avisar('Mensagem excluída.');
     } catch (erro) {
       avisar(erro.message, 'erro');

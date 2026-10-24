@@ -1,4 +1,5 @@
 import { seloTipoEvento } from '../components/evento.js';
+import { abrirComentarios, barraInteracoes } from '../components/interacoes.js';
 import { api } from '../core/api.js';
 import { atualizarSeloAgenda } from '../core/layout.js';
 import { dataCurta, dataPorExtenso, hora, mesmoDia } from '../core/formatos.js';
@@ -66,8 +67,13 @@ export default async function paginaEvento({ el, params, navegar }) {
               </button>
             </div>`
           : ''}
-      </div>`,
+      </div>
+
+      <section class="cartao mt-3" aria-label="Curtidas e comentários">${barraInteracoes('eventos', evento)}</section>`,
   );
+
+  // Na página do evento, a conversa já aparece aberta.
+  abrirComentarios(el.querySelector('[data-interacoes]'));
 
   el.querySelector('[data-acao="excluir"]')?.addEventListener('click', async () => {
     const confirmado = await confirmar({
