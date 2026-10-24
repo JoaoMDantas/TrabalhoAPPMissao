@@ -2,6 +2,7 @@ import { erros } from '../../core/erros.js';
 import { podeGerenciar } from '../../core/permissoes.js';
 import { garantirExiste as garantirIgrejaExiste } from '../igrejas/igrejas.service.js';
 import { comInteracoes } from '../interacoes/interacoes.service.js';
+import { comPresencas } from '../presencas/presencas.service.js';
 import * as repositorio from './eventos.repository.js';
 
 const comPermissoes = (usuario, evento) => ({
@@ -20,15 +21,19 @@ async function garantirPodeEditar(usuario, id) {
   if (!comPermissoes(usuario, evento).pode_editar) throw erros.semPermissao('Você não pode alterar este evento.');
 }
 
-// A agenda mostra também os totais de curtidas e comentários de cada evento.
+// A agenda mostra também quantas pessoas confirmaram presença e os totais de curtidas e comentários de cada evento.
+async function completar(usuario, eventos) {
+  const comTotais = await comPresencas(usuario, await comInteracoes('eventos', usuario, eventos));
+  return comTotais.map((evento) => comPermissoes(usuario, evento));
+}
+
 export async function listar(usuario, filtros) {
-  const eventos = await comInteracoes('eventos', usuario, await repositorio.listar(filtros));
-  return eventos.map((evento) => comPermissoes(usuario, evento));
+  return completar(usuario, await repositorio.listar(filtros));
 }
 
 export async function obter(usuario, id) {
-  const [evento] = await comInteracoes('eventos', usuario, [await buscarOuFalhar(id)]);
-  return comPermissoes(usuario, evento);
+  const [evento] = await completar(usuario, [await buscarOuFalhar(id)]);
+  return evento;
 }
 
 export async function criar(usuario, dados) {
