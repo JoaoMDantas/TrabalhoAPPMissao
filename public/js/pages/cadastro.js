@@ -128,7 +128,7 @@ export default function paginaCadastro({ el, navegar }) {
       const { token, usuario } = await api.post('/auth/registrar', dados);
       sessao.iniciar(token, usuario);
       avisar(`Bem-vindo(a), ${usuario.nome.split(' ')[0]}!`);
-      navegar('/inicio');
+      navegar(sessao.tomarDestino() || '/inicio');
     } catch (erro) {
       mostrarErroFormulario(form, erro);
     } finally {

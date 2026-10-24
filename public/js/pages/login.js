@@ -53,7 +53,7 @@ export default function paginaLogin({ el, navegar }) {
     try {
       const { token, usuario } = await api.post('/auth/login', lerFormulario(form));
       sessao.iniciar(token, usuario);
-      navegar('/inicio');
+      navegar(sessao.tomarDestino() || '/inicio');
     } catch (erro) {
       mostrarErroFormulario(form, erro);
     } finally {

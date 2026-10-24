@@ -14,6 +14,8 @@ const rotasCompiladas = rotas.map((rota) => ({
 let navegacaoAtual = 0;
 // Tarefas de limpeza registradas pela tela atual (ex.: encerrar o leitor de PDF), executadas ao trocar de tela.
 let limpezas = [];
+// Só o endereço com que o app foi aberto (ex.: um link recebido no WhatsApp) é lembrado para depois do login.
+let primeiraNavegacao = true;
 
 function limparTelaAnterior() {
   for (const limpar of limpezas.splice(0)) {
@@ -52,13 +54,19 @@ export function navegar(caminho, { substituir = false } = {}) {
 
 async function resolver() {
   const id = ++navegacaoAtual;
+  const abriuOApp = primeiraNavegacao;
+  primeiraNavegacao = false;
   limparTelaAnterior();
   const { caminho, query } = lerEndereco();
 
   if (caminho === '/') return navegar(sessao.logado ? '/inicio' : '/login', { substituir: true });
 
   const { rota, params } = encontrarRota(caminho);
-  if (!rota.publica && !sessao.logado) return navegar('/login', { substituir: true });
+  if (!rota.publica && !sessao.logado) {
+    // Quem abre o link de uma tela sem estar logado (ex.: um evento compartilhado) volta para ela depois de entrar.
+    if (abriuOApp && rota !== rotaNaoEncontrada) sessao.guardarDestino(window.location.hash.slice(1));
+    return navegar('/login', { substituir: true });
+  }
   if (rota.publica && !rota.livre && sessao.logado) return navegar('/inicio', { substituir: true });
 
   document.title = `${rota.titulo} · Projeto Missionário`;

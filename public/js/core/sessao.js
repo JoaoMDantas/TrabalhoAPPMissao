@@ -1,5 +1,6 @@
 const CHAVE_TOKEN = 'pm.token';
 const CHAVE_USUARIO = 'pm.usuario';
+const CHAVE_DESTINO = 'pm.destino';
 
 // O armazenamento pode estar bloqueado (ex.: navegação anônima); nesse caso a sessão vale só enquanto a aba estiver aberta.
 function ler(chave) {
@@ -59,5 +60,25 @@ export const sessao = {
     usuario = null;
     gravar(CHAVE_TOKEN, null);
     gravar(CHAVE_USUARIO, null);
+  },
+
+  /** Guarda a tela que a pessoa tentou abrir sem estar logada (ex.: o link de um evento recebido no WhatsApp). */
+  guardarDestino(caminho) {
+    try {
+      sessionStorage.setItem(CHAVE_DESTINO, caminho);
+    } catch {
+      // Sem armazenamento: depois do login, a pessoa vai para o início.
+    }
+  },
+
+  /** Devolve a tela guardada, uma única vez, para abri-la logo depois do login. */
+  tomarDestino() {
+    try {
+      const caminho = sessionStorage.getItem(CHAVE_DESTINO);
+      sessionStorage.removeItem(CHAVE_DESTINO);
+      return caminho;
+    } catch {
+      return null;
+    }
   },
 };
