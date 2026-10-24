@@ -1960,6 +1960,132 @@ a.cartao-dica:hover {
   font-size: 0.92rem;
 }
 
+/* --- Passo a passo para instalar o app (iPhone e Android) --- */
+.aviso-instalacao {
+  display: flex;
+  gap: 0.55rem;
+  margin: 0 0 1rem;
+  padding: 0.65rem 0.85rem;
+  border-radius: 14px;
+  background: var(--pm-fundo);
+  color: var(--pm-noite);
+  font-size: 0.85rem;
+}
+
+.aviso-instalacao .bi {
+  margin-top: 0.1rem;
+}
+
+.aviso-instalacao.instalado {
+  background: var(--pm-confirmado-claro);
+  color: var(--pm-confirmado);
+}
+
+.instalar-rapido {
+  margin-top: 1.25rem;
+  padding: 0.9rem;
+  border-radius: 16px;
+  background: var(--pm-primaria-clara);
+  text-align: center;
+}
+
+.passos-instalar {
+  display: grid;
+  gap: 1.1rem;
+  margin: 1.25rem 0 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: passo;
+}
+
+/* Linhas mais altas para os botões desenhados no meio do texto não encostarem uns nos outros. */
+.passos-instalar li {
+  position: relative;
+  min-height: 2rem;
+  padding-left: 2.75rem;
+  line-height: 1.75;
+  counter-increment: passo;
+}
+
+.passos-instalar li::before {
+  content: counter(passo);
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: var(--pm-noite);
+  color: var(--pm-destaque);
+  font-weight: 700;
+  line-height: 1;
+}
+
+.botao-exemplo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.05rem 0.6rem;
+  border: 1px solid #cfd6e6;
+  border-radius: 10px;
+  background: var(--pm-fundo);
+  color: var(--pm-noite);
+  font-size: 0.85rem;
+  font-weight: 600;
+  line-height: 1.6;
+  white-space: nowrap;
+}
+
+.passo-dica {
+  display: block;
+  margin-top: 0.1rem;
+  color: var(--pm-texto-suave);
+  font-size: 0.8rem;
+  line-height: 1.45;
+}
+
+.instalar-pronto {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  margin-top: 1.4rem;
+  padding: 0.9rem 1rem;
+  border-radius: 16px;
+  background: var(--pm-fundo);
+  font-size: 0.9rem;
+}
+
+/* O ícone como aparece na tela inicial do celular, com o nome embaixo. */
+.icone-tela-inicial {
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  color: var(--pm-noite);
+  font-size: 0.68rem;
+  font-weight: 500;
+}
+
+.icone-tela-inicial img {
+  border-radius: 14px;
+  box-shadow: 0 6px 14px rgba(16, 25, 54, 0.25);
+}
+
+.dica-depois {
+  display: flex;
+  gap: 0.5rem;
+  margin: 0.9rem 0 0;
+  color: var(--pm-texto-suave);
+  font-size: 0.82rem;
+}
+
+.dica-depois .bi {
+  margin-top: 0.1rem;
+}
+
 /* --- Login e cadastro --- */
 .tela-acesso {
   display: flex;

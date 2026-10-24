@@ -3,7 +3,7 @@ import { itemMensagem } from '../components/mensagem.js';
 import { api } from '../core/api.js';
 import { agoraParaApi, dataPorExtenso } from '../core/formatos.js';
 import { atualizarSeloAgenda } from '../core/layout.js';
-import { instalar, podeInstalar } from '../core/pwa.js';
+import { dicaDispensada, dispensarDica, estaInstalado, instalar, podeInstalar, sistemaDoCelular } from '../core/pwa.js';
 import { PAPEIS } from '../core/rotulos.js';
 import { sessao } from '../core/sessao.js';
 import { avisar, carregando, estadoVazio, html, render } from '../core/ui.js';
@@ -12,6 +12,9 @@ const textoHoje = (quantidade) =>
   quantidade === 0
     ? 'Nenhuma atividade restante para hoje.'
     : `Você tem ${quantidade} ${quantidade === 1 ? 'atividade' : 'atividades'} hoje.`;
+
+// A dica aparece no celular (ou quando o navegador oferece instalar) até a pessoa instalar o app ou fechar a dica.
+const mostrarDicaInstalar = () => !estaInstalado() && !dicaDispensada() && (sistemaDoCelular() !== null || podeInstalar());
 
 export default async function paginaInicio({ el }) {
   const usuario = sessao.usuario;
@@ -27,11 +30,14 @@ export default async function paginaInicio({ el }) {
         <p class="mb-0 fw-semibold" data-hoje>&nbsp;</p>
       </section>
 
-      ${podeInstalar()
+      ${mostrarDicaInstalar()
         ? html`<div class="cartao cartao-dica mt-3" data-instalar>
             <i class="bi bi-phone" aria-hidden="true"></i>
             <div class="flex-grow-1 small"><strong>Instale o aplicativo</strong><br>Acesse mais rápido pela tela inicial do celular.</div>
-            <button type="button" class="btn btn-primary btn-sm" data-acao="instalar">Instalar</button>
+            ${podeInstalar()
+              ? html`<button type="button" class="btn btn-primary btn-sm text-nowrap" data-acao="instalar">Instalar</button>`
+              : html`<a class="btn btn-primary btn-sm text-nowrap" href="#/instalar">Ver como</a>`}
+            <button type="button" class="btn-close" data-acao="dispensar-dica" aria-label="Fechar a dica de instalação"></button>
           </div>`
         : ''}
       ${!usuario.igreja_id
@@ -63,6 +69,10 @@ export default async function paginaInicio({ el }) {
 
   el.querySelector('[data-acao="instalar"]')?.addEventListener('click', async () => {
     if (await instalar()) avisar('Aplicativo instalado!');
+    el.querySelector('[data-instalar]')?.remove();
+  });
+  el.querySelector('[data-acao="dispensar-dica"]')?.addEventListener('click', () => {
+    dispensarDica();
     el.querySelector('[data-instalar]')?.remove();
   });
 

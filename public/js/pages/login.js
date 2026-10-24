@@ -1,4 +1,5 @@
 import { api } from '../core/api.js';
+import { estaInstalado } from '../core/pwa.js';
 import { sessao } from '../core/sessao.js';
 import { alternarEnvio, html, lerFormulario, limparErrosFormulario, mostrarErroFormulario, render } from '../core/ui.js';
 
@@ -36,6 +37,11 @@ export default function paginaLogin({ el, navegar }) {
           <p class="text-center mt-4 mb-0">
             Ainda não tem conta? <a href="#/cadastro" class="fw-semibold">Criar conta</a>
           </p>
+          ${estaInstalado()
+            ? ''
+            : html`<p class="text-center small mt-3 mb-0">
+                <a href="#/instalar"><i class="bi bi-phone" aria-hidden="true"></i> Como instalar o app no celular</a>
+              </p>`}
         </div>
       </div>`,
   );

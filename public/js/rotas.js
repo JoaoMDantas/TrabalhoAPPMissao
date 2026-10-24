@@ -10,6 +10,7 @@ export const rotas = [
   { caminho: '/cadastro', titulo: 'Criar conta', pagina: pagina('cadastro'), publica: true },
   // "livre": acessível com ou sem login.
   { caminho: '/privacidade', titulo: 'Aviso de privacidade', pagina: pagina('privacidade'), publica: true, livre: true },
+  { caminho: '/instalar', titulo: 'Instalar o app', pagina: pagina('instalar'), publica: true, livre: true },
 
   { caminho: '/inicio', titulo: 'Início', pagina: pagina('inicio'), nav: { icone: 'house-door', rotulo: 'Início' } },
 

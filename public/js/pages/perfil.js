@@ -1,5 +1,5 @@
 import { api } from '../core/api.js';
-import { instalar, podeInstalar } from '../core/pwa.js';
+import { estaInstalado } from '../core/pwa.js';
 import { BAIRROS_SUGERIDOS, PAPEIS } from '../core/rotulos.js';
 import { sessao } from '../core/sessao.js';
 import {
@@ -95,11 +95,11 @@ export default async function paginaPerfil({ el, navegar }) {
         <button class="btn btn-outline-primary w-100" type="submit">Alterar senha</button>
       </form>
 
-      ${podeInstalar()
-        ? html`<button type="button" class="btn btn-outline-primary w-100 mb-3" data-acao="instalar">
-            <i class="bi bi-phone" aria-hidden="true"></i> Instalar aplicativo no celular
-          </button>`
-        : ''}
+      ${estaInstalado()
+        ? ''
+        : html`<a class="btn btn-outline-primary w-100 mb-3" href="#/instalar">
+            <i class="bi bi-phone" aria-hidden="true"></i> Instalar o app no celular
+          </a>`}
       <button type="button" class="btn btn-outline-danger w-100" data-acao="sair">
         <i class="bi bi-box-arrow-right" aria-hidden="true"></i> Sair da conta
       </button>
@@ -126,12 +126,6 @@ export default async function paginaPerfil({ el, navegar }) {
     await api.put('/usuarios/eu/senha', dados);
     formSenha.reset();
     avisar('Senha alterada.');
-  });
-
-  const botaoInstalar = el.querySelector('[data-acao="instalar"]');
-  botaoInstalar?.addEventListener('click', async () => {
-    if (await instalar()) avisar('Aplicativo instalado!');
-    botaoInstalar.remove();
   });
 
   el.querySelector('[data-acao="sair"]').addEventListener('click', async () => {
