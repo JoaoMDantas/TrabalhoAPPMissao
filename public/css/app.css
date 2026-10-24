@@ -50,6 +50,8 @@
   --pm-texto: #121a33;
   --pm-texto-suave: #5f6b88;
   --pm-curtida: #e11d48;
+  --pm-confirmado: #166534;
+  --pm-confirmado-claro: #dcfce7;
   --pm-sombra: 0 10px 26px rgba(16, 25, 54, 0.08);
   --pm-sombra-forte: 0 14px 32px rgba(16, 25, 54, 0.14);
   --pm-fonte: 'Poppins', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
@@ -730,6 +732,187 @@ a.cartao-dica:hover {
 .tipo-acao_social { background: #fef3c7; color: #92400e; }
 .tipo-reuniao { background: #ede9fe; color: #5b21b6; }
 .tipo-outro { background: #e5e7eb; color: #374151; }
+
+/* "Você vai": eventos em que a pessoa confirmou presença */
+.selo-vou {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  background: var(--pm-confirmado-claro);
+  color: var(--pm-confirmado);
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+/* Presenças, curtidas e comentários no canto do cartão do evento */
+.totais-evento {
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: column;
+  align-items: flex-end;
+  color: var(--pm-texto-suave);
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.35;
+}
+
+.totais-evento .bi {
+  margin-right: 0.15rem;
+}
+
+/* --- Confirmação de presença (página do evento) --- */
+.presenca-topo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.presenca-icone {
+  display: inline-flex;
+  flex: 0 0 44px;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--pm-primaria-clara);
+  color: var(--pm-primaria-escura);
+  font-size: 1.3rem;
+}
+
+.presenca-icone.confirmada {
+  background: var(--pm-confirmado-claro);
+  color: var(--pm-confirmado);
+}
+
+.presenca-icone.encerrado {
+  background: var(--pm-fundo);
+  color: var(--pm-texto-suave);
+}
+
+.presenca-titulo {
+  margin: 0;
+  color: var(--pm-noite);
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.presenca-texto {
+  margin: 0.1rem 0 0;
+  color: var(--pm-texto-suave);
+  font-size: 0.85rem;
+}
+
+.selo-igrejas {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin: 0.85rem 0 0;
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+  background: var(--pm-fundo);
+  color: var(--pm-noite);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.linha-quem-vai {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  margin-top: 0.6rem;
+  padding: 0.4rem 0.5rem 0.4rem 0.25rem;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--pm-texto);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-align: left;
+}
+
+@media (hover: hover) {
+  .linha-quem-vai:hover {
+    background: var(--pm-fundo);
+  }
+}
+
+.linha-quem-vai:focus-visible {
+  outline: 2px solid var(--pm-primaria);
+  outline-offset: 1px;
+}
+
+.linha-quem-vai-texto {
+  margin-left: auto;
+}
+
+.linha-quem-vai .bi-chevron-down {
+  color: var(--pm-texto-suave);
+  transition: transform 0.15s;
+}
+
+.linha-quem-vai[aria-expanded='true'] .bi-chevron-down {
+  transform: rotate(180deg);
+}
+
+.pilha-avatares {
+  display: inline-flex;
+}
+
+/* Os rostos se sobrepõem um pouco (sem cobrir as iniciais), com um contorno branco separando um do outro. */
+.pilha-avatares .avatar {
+  box-shadow: 0 0 0 2px var(--pm-superficie);
+  font-size: calc(var(--tamanho) * 0.34);
+}
+
+.pilha-avatares .avatar + .avatar {
+  margin-left: -6px;
+}
+
+.mais-rostos {
+  color: var(--pm-texto-suave);
+  font-size: 0.8rem;
+}
+
+.lista-presencas {
+  display: grid;
+  gap: 0.65rem;
+  margin: 0.5rem 0 0;
+  padding: 0 0.25rem;
+  list-style: none;
+}
+
+.pessoa-presenca {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.pessoa-presenca-texto {
+  min-width: 0;
+  font-size: 0.9rem;
+}
+
+.pessoa-presenca-texto a {
+  color: var(--pm-texto);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.pessoa-presenca-sub {
+  overflow: hidden;
+  color: var(--pm-texto-suave);
+  font-size: 0.75rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cartao-presenca .btn {
+  margin-top: 0.9rem;
+}
 
 /* --- Agenda --- */
 .cabecalho-mes {
@@ -1435,22 +1618,6 @@ a.cartao-dica:hover {
   height: 40px;
   padding: 0;
   border-radius: 50%;
-}
-
-/* Totais no cartão do evento, na agenda */
-.totais-interacoes {
-  display: flex;
-  flex: 0 0 auto;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 0.1rem;
-  color: var(--pm-texto-suave);
-  font-size: 0.75rem;
-  font-variant-numeric: tabular-nums;
-}
-
-.totais-interacoes .bi {
-  margin-right: 0.15rem;
 }
 
 /* --- Detalhes --- */

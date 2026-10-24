@@ -52,6 +52,9 @@ export function rotuloDia(valor) {
   return formato.semana.format(data);
 }
 
+/** Singular ou plural conforme a quantidade: palavra(1, 'pessoa', 'pessoas') devolve "pessoa". */
+export const palavra = (total, singular, plural) => (total === 1 ? singular : plural);
+
 export function tempoRelativo(valor) {
   const segundos = Math.max(0, (Date.now() - comoData(valor).getTime()) / 1000);
   if (segundos < 60) return 'agora';

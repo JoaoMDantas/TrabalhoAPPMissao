@@ -1,5 +1,5 @@
 import { api } from '../core/api.js';
-import { tempoRelativo } from '../core/formatos.js';
+import { palavra, tempoRelativo } from '../core/formatos.js';
 import { PAPEIS } from '../core/rotulos.js';
 import { sessao } from '../core/sessao.js';
 import { acrescentar, avatar, avisar, blocoErro, carregando, confirmar, html, render } from '../core/ui.js';
@@ -9,10 +9,8 @@ const LIMITE_COMENTARIO = 500;
 // Acima disso, "Curtido por" mostra dois nomes e "mais N pessoas".
 const NOMES_VISIVEIS = 3;
 
-const palavra = (total, singular, plural) => (total === 1 ? singular : plural);
-
 // O número aparece ao lado do botão; o texto escondido completa a leitura para quem usa leitor de tela.
-const contagem = (total, singular, plural) =>
+export const contagem = (total, singular, plural) =>
   total ? html`${total}<span class="visually-hidden"> ${palavra(total, singular, plural)}</span>` : '';
 
 /**
@@ -34,20 +32,6 @@ export const barraInteracoes = (alvo, item) => html`
     </div>
     <div class="painel-comentarios" id="comentarios-${alvo}-${item.id}" data-painel hidden></div>
   </div>`;
-
-/** Resumo para cartões que são links (ex.: evento na agenda), onde não cabem botões. */
-export function totaisInteracoes(item) {
-  if (!item.total_curtidas && !item.total_comentarios) return '';
-  return html`
-    <span class="totais-interacoes">
-      ${item.total_curtidas
-        ? html`<span><i class="bi bi-heart" aria-hidden="true"></i> ${contagem(item.total_curtidas, 'curtida', 'curtidas')}</span>`
-        : ''}
-      ${item.total_comentarios
-        ? html`<span><i class="bi bi-chat" aria-hidden="true"></i> ${contagem(item.total_comentarios, 'comentário', 'comentários')}</span>`
-        : ''}
-    </span>`;
-}
 
 const itemComentario = (comentario) => html`
   <li class="comentario" data-comentario="${comentario.id}">

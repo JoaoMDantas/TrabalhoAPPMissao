@@ -1,5 +1,6 @@
 import { seloTipoEvento } from '../components/evento.js';
 import { abrirComentarios, barraInteracoes } from '../components/interacoes.js';
+import { cartaoPresenca, montarPresenca } from '../components/presenca.js';
 import { api } from '../core/api.js';
 import { atualizarSeloAgenda } from '../core/layout.js';
 import { dataCurta, dataPorExtenso, hora, mesmoDia } from '../core/formatos.js';
@@ -18,6 +19,8 @@ function textoParaCompartilhar(evento) {
     `${dataPorExtenso(evento.data_inicio)}, ${descreverHorario(evento)}`,
     evento.local && `Local: ${evento.local}`,
     evento.igreja_nome && `Igreja: ${evento.igreja_nome}`,
+    // Quem recebe a mensagem abre o evento no app e confirma ali mesmo.
+    !evento.encerrado && `\nConfirme sua presença no Projeto Missionário: ${window.location.origin}/#/agenda/${evento.id}`,
   ]
     .filter(Boolean)
     .join('\n');
@@ -52,6 +55,8 @@ export default async function paginaEvento({ el, params, navegar }) {
         ${evento.descricao ? html`<h2 class="h6 fw-bold mt-3">Descrição</h2><p class="texto-livre mb-0">${evento.descricao}</p>` : ''}
       </article>
 
+      ${cartaoPresenca()}
+
       <div class="d-grid gap-2 mt-3">
         <a class="btn btn-success" href="https://wa.me/?text=${encodeURIComponent(textoParaCompartilhar(evento))}"
           target="_blank" rel="noopener">
@@ -72,6 +77,7 @@ export default async function paginaEvento({ el, params, navegar }) {
       <section class="cartao mt-3" aria-label="Curtidas e comentários">${barraInteracoes('eventos', evento)}</section>`,
   );
 
+  montarPresenca(el.querySelector('[data-presenca]'), evento);
   // Na página do evento, a conversa já aparece aberta.
   abrirComentarios(el.querySelector('[data-interacoes]'));
 

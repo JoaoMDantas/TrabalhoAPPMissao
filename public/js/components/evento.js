@@ -1,12 +1,30 @@
 import { hora, mesCurto, paraData, rotuloDia } from '../core/formatos.js';
 import { TIPOS_EVENTO } from '../core/rotulos.js';
 import { html } from '../core/ui.js';
-import { totaisInteracoes } from './interacoes.js';
+import { contagem } from './interacoes.js';
 
 export const seloTipoEvento = (tipo) => {
   const { rotulo, icone } = TIPOS_EVENTO[tipo] ?? TIPOS_EVENTO.outro;
   return html`<span class="selo-tipo tipo-${tipo}"><i class="bi bi-${icone}" aria-hidden="true"></i> ${rotulo}</span>`;
 };
+
+/** Resumo no canto do cartão, que é um link inteiro (não cabem botões): presenças, curtidas e comentários. */
+function totaisDoEvento(evento) {
+  const totais = [
+    ['person-check', evento.total_presencas, 'presença confirmada', 'presenças confirmadas'],
+    ['heart', evento.total_curtidas, 'curtida', 'curtidas'],
+    ['chat', evento.total_comentarios, 'comentário', 'comentários'],
+  ].filter(([, total]) => total);
+  if (!totais.length) return '';
+
+  return html`
+    <span class="totais-evento">
+      ${totais.map(
+        ([icone, total, singular, plural]) =>
+          html`<span><i class="bi bi-${icone}" aria-hidden="true"></i> ${contagem(total, singular, plural)}</span>`,
+      )}
+    </span>`;
+}
 
 /**
  * Cartão de evento. Com "agrupadoPorDia" (usado na agenda), o bloco lateral mostra a hora,
@@ -30,10 +48,13 @@ export function itemEvento(evento, { agrupadoPorDia = false } = {}) {
       </div>
       <div class="item-evento-corpo">
         ${seloTipoEvento(evento.tipo)}
+        ${evento.confirmou && !passado
+          ? html`<span class="selo-vou"><i class="bi bi-check-circle-fill" aria-hidden="true"></i> Você vai</span>`
+          : ''}
         <h3 class="item-evento-titulo">${evento.titulo}</h3>
         <p class="item-evento-meta">${detalhes.map((detalhe, i) => html`${i ? ' · ' : ''}${detalhe}`)}</p>
       </div>
-      ${totaisInteracoes(evento)}
+      ${totaisDoEvento(evento)}
       <i class="bi bi-chevron-right seta" aria-hidden="true"></i>
     </a>`;
 }
