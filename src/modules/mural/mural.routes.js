@@ -3,6 +3,7 @@ import { autenticar } from '../../core/middlewares/autenticar.js';
 import { receberArquivos } from '../../core/middlewares/receberArquivos.js';
 import { validar } from '../../core/middlewares/validar.js';
 import { paramsComId } from '../../core/validacao.js';
+import { rotasDeInteracoes } from '../interacoes/interacoes.routes.js';
 import * as controller from './mural.controller.js';
 import { LIMITE_FOTO_MB, MAXIMO_FOTOS, esquemaMensagem, filtrosMural, linkDaFoto } from './mural.schemas.js';
 
@@ -21,5 +22,8 @@ rotas.post(
   controller.criar,
 );
 rotas.delete('/:id', validar({ params: paramsComId }), controller.excluir);
+
+// Curtidas e comentários: /api/mural/:id/curtida e /api/mural/:id/comentarios.
+rotas.use(rotasDeInteracoes('mural'));
 
 export default rotas;

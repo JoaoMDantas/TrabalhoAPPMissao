@@ -4,6 +4,7 @@ import { assinar, assinaturaValida } from '../../core/assinatura.js';
 import { erros } from '../../core/erros.js';
 import { PAPEIS, podeGerenciar } from '../../core/permissoes.js';
 import { garantirExiste as garantirIgrejaExiste } from '../igrejas/igrejas.service.js';
+import { comInteracoes } from '../interacoes/interacoes.service.js';
 import * as repositorio from './mural.repository.js';
 
 const comPermissoes = (usuario, mensagem) => ({
@@ -19,18 +20,22 @@ function enderecoDaFoto(id) {
   return `/api/mural/fotos/${id}?expira=${expira}&assinatura=${assinatura}`;
 }
 
-async function comFotosEPermissoes(usuario, mensagens) {
-  const fotos = await repositorio.listarFotos(mensagens.map((mensagem) => mensagem.id));
+/** Completa as mensagens com as fotos, os totais de curtidas e comentários e as permissões de quem pediu. */
+async function completar(usuario, mensagens) {
+  const [fotos, comTotais] = await Promise.all([
+    repositorio.listarFotos(mensagens.map((mensagem) => mensagem.id)),
+    comInteracoes('mural', usuario, mensagens),
+  ]);
   const porMensagem = new Map();
   for (const foto of fotos) {
     if (!porMensagem.has(foto.mensagem_id)) porMensagem.set(foto.mensagem_id, []);
     porMensagem.get(foto.mensagem_id).push({ id: foto.id, url: enderecoDaFoto(foto.id) });
   }
-  return mensagens.map((mensagem) => ({ ...comPermissoes(usuario, mensagem), fotos: porMensagem.get(mensagem.id) ?? [] }));
+  return comTotais.map((mensagem) => ({ ...comPermissoes(usuario, mensagem), fotos: porMensagem.get(mensagem.id) ?? [] }));
 }
 
 export async function listar(usuario, filtros) {
-  return comFotosEPermissoes(usuario, await repositorio.listar(filtros));
+  return completar(usuario, await repositorio.listar(filtros));
 }
 
 export async function criar(usuario, dados, arquivos = []) {
@@ -54,7 +59,7 @@ export async function criar(usuario, dados, arquivos = []) {
     return novoId;
   });
 
-  const [criada] = await comFotosEPermissoes(usuario, [await repositorio.buscarPorId(id)]);
+  const [criada] = await completar(usuario, [await repositorio.buscarPorId(id)]);
   return criada;
 }
 

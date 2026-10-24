@@ -1,6 +1,7 @@
 import { erros } from '../../core/erros.js';
 import { podeGerenciar } from '../../core/permissoes.js';
 import { garantirExiste as garantirIgrejaExiste } from '../igrejas/igrejas.service.js';
+import { comInteracoes } from '../interacoes/interacoes.service.js';
 import * as repositorio from './eventos.repository.js';
 
 const comPermissoes = (usuario, evento) => ({
@@ -19,13 +20,15 @@ async function garantirPodeEditar(usuario, id) {
   if (!comPermissoes(usuario, evento).pode_editar) throw erros.semPermissao('Você não pode alterar este evento.');
 }
 
+// A agenda mostra também os totais de curtidas e comentários de cada evento.
 export async function listar(usuario, filtros) {
-  const eventos = await repositorio.listar(filtros);
+  const eventos = await comInteracoes('eventos', usuario, await repositorio.listar(filtros));
   return eventos.map((evento) => comPermissoes(usuario, evento));
 }
 
 export async function obter(usuario, id) {
-  return comPermissoes(usuario, await buscarOuFalhar(id));
+  const [evento] = await comInteracoes('eventos', usuario, [await buscarOuFalhar(id)]);
+  return comPermissoes(usuario, evento);
 }
 
 export async function criar(usuario, dados) {
